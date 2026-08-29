@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resume - Jay Pawar</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 10mm 12mm;
+            background-color: #ffffff;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #1a202c;
+            line-height: 1.35;
+            font-size: 8.8pt;
+        }
+
+        /* Action Buttons Styling */
+        .controls-container {
+            text-align: center;
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn {
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+
+        .btn-download {
+            background-color: #1a365d;
+        }
+
+        .btn-download:hover {
+            background-color: #2b6cb0;
+        }
+
+        .btn-edit {
+            background-color: #dd6b20;
+        }
+
+        .btn-edit:hover {
+            background-color: #c05621;
+        }
+
+        /* Editable Highlight indicator */
+        [contenteditable="true"] {
+            outline: 1px dashed #3182ce;
+            background-color: rgba(235, 248, 255, 0.4);
+        }
+
+        /* Hide buttons during printing/saving PDF */
+        @media print {
+            .controls-container {
+                display: none !important;
+            }
+            [contenteditable="true"] {
+                outline: none !important;
+                background-color: transparent !important;
+            }
+        }
+
+        /* Header Styling */
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #1a365d;
+            padding-bottom: 6px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 18pt;
+            color: #1a365d;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .header .subtitle {
+            font-size: 9.5pt;
+            font-weight: bold;
+            color: #2b6cb0;
+            margin-bottom: 4px;
+        }
+
+        .contact-info {
+            font-size: 8pt;
+            color: #4a5568;
+        }
+
+        .contact-info span {
+            margin: 0 3px;
+        }
+
+        .contact-info a {
+            color: #2b6cb0;
+            text-decoration: none;
+        }
+
+        /* Section Styling */
+        .section {
+            margin-bottom: 9px;
+        }
+
+        .section-title {
+            font-size: 10pt;
+            font-weight: bold;
+            color: #1a365d;
+            text-transform: uppercase;
+            border-bottom: 1px solid #cbd5e0;
+            padding-bottom: 1px;
+            margin-bottom: 5px;
+            letter-spacing: 0.3px;
+        }
+
+        /* Summary */
+        .summary {
+            text-align: justify;
+            color: #2d3748;
+        }
+
+        /* Skills */
+        .skills-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .skills-table td {
+            padding: 1.5px 0;
+            vertical-align: top;
+        }
+
+        .skill-category {
+            font-weight: bold;
+            width: 25%;
+            color: #2d3748;
+        }
+
+        .skill-list {
+            width: 75%;
+            color: #4a5568;
+        }
+
+        /* Experience & Projects */
+        .item-header {
+            display: table;
+            width: 100%;
+            margin-bottom: 1px;
+        }
+
+        .item-title {
+            display: table-cell;
+            font-weight: bold;
+            color: #2d3748;
+            text-align: left;
+        }
+
+        .item-subtext {
+            display: table-cell;
+            font-style: italic;
+            color: #4a5568;
+            text-align: right;
+            font-size: 8pt;
+        }
+
+        .item-subtitle {
+            font-style: italic;
+            color: #4a5568;
+            margin-bottom: 2px;
+            font-size: 8.5pt;
+        }
+
+        ul.bullets {
+            padding-left: 14px;
+            margin-top: 1px;
+        }
+
+        ul.bullets li {
+            margin-bottom: 2px;
+            color: #2d3748;
+            text-align: justify;
+        }
+
+        /* Certifications & Languages */
+        .cert-list {
+            padding-left: 14px;
+        }
+
+        .cert-list li {
+            margin-bottom: 1.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Controls Container -->
+    <div class="controls-container">
+        <button class="btn btn-edit" id="toggleEditBtn" onclick="toggleEditing()">✏️ Toggle Edit Mode</button>
+        <button class="btn btn-download" onclick="downloadPDF()">📥 Download / Save to PDF</button>
+    </div>
+
+    <!-- Resume Content Wrapper -->
+    <div id="resume-content" contenteditable="false">
+        
+        <!-- Header -->
+        <div class="header">
+            <h1>JAY PAWAR</h1>
+            <div class="subtitle">Software Engineering Intern | Data Structures & Full Stack</div>
+            <div class="contact-info">
+                Moshi, Pune, Maharashtra 412105 <span>|</span> 
+                Phone: +91 83172 89128 <span>|</span> 
+                Email: jaypawar8399@gmail.com
+                <br>
+                Portfolio: <a href="https://portfolio-website-eta-seven-24.vercel.app">portfolio-website-eta-seven-24.vercel.app</a> <span>|</span> 
+                GitHub: <a href="https://github.com/jay-soft-dev">github.com/jay-soft-dev</a> <span>|</span> 
+                LinkedIn: <a href="https://linkedin.com/in/jay-pawar99">linkedin.com/in/jay-pawar99</a>
+            </div>
+        </div>
+
+        <!-- Professional Summary -->
+        <div class="section">
+            <div class="section-title">PROFESSIONAL SUMMARY</div>
+            <div class="summary">
+                Second-year BCA (Science) student with strong foundations in Data Structures, Problem Solving, C/C++, and Full Stack Web Development (React.js, Node.js). Experienced in building system utilities and web applications, including a student notes platform with cloud authentication and a traffic challan management system. Seeking a Software Engineering Internship to apply core programming, problem-solving, and full stack development skills, available to start immediately.
+            </div>
+        </div>
+
+        <!-- Technical Skills -->
+        <div class="section">
+            <div class="section-title">TECHNICAL SKILLS</div>
+            <table class="skills-table">
+                <tr>
+                    <td class="skill-category">Core Computer Science:</td>
+                    <td class="skill-list">Data Structures & Algorithms (DSA), C, C++ (STL), Core Java, Object-Oriented Programming (OOP)</td>
+                </tr>
+                <tr>
+                    <td class="skill-category">Software Engineering Tools:</td>
+                    <td class="skill-list">Git, GitHub, Linux/OS Concepts, VS Code, SQL, DBMS, Vercel, MS Office</td>
+                </tr>
+                <tr>
+                    <td class="skill-category">Web Development:</td>
+                    <td class="skill-list">React.js, Node.js, Express.js, Tailwind CSS, RESTful APIs, Firebase, HTML5, CSS3, JavaScript (ES6+)</td>
+                </tr>
+                <tr>
+                    <td class="skill-category">Soft Skills:</td>
+                    <td class="skill-list">Analytical Problem Solving, Technical Communication, Teamwork, Continuous Learning, Adaptability</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Experience -->
+        <div class="section">
+            <div class="section-title">EXPERIENCE</div>
+            <div class="item-header">
+                <div class="item-title">Full Stack Developer and Freelancer</div>
+                <div class="item-subtext">2024-Present</div>
+            </div>
+            <div class="item-subtitle">Independent and Academic Projects | Available Immediately for Internship</div>
+            <ul class="bullets">
+                <li>Architected and deployed full stack web applications using React.js, Node.js, Tailwind CSS, and Firebase, covering authentication, real-time data storage, and responsive UI.</li>
+                <li>Engineered 6 or more software applications and command-line tools using C, C++, Java, and web technologies to solve practical computational problems.</li>
+                <li>Integrated debugging and optimization practices across 15 or more academic code reviews, improving algorithm execution speed by 20 percent.</li>
+                <li>Successfully delivered 3+ commercial web projects for local clients, improving client web engagement and UI performance.</li>
+            </ul>
+        </div>
+
+        <!-- Virtual Experience -->
+        <div class="section">
+            <div class="section-title">VIRTUAL EXPERIENCE - JOB SIMULATIONS (FORAGE)</div>
+            
+            <div style="margin-bottom: 3px;">
+                <div class="item-header">
+                    <div class="item-title">Software Engineering Job Simulation - Commonwealth Bank</div>
+                    <div class="item-subtext">Aug 2026</div>
+                </div>
+                <ul class="bullets">
+                    <li>Modified an existing .NET backend and React/Redux frontend per client requirements, covered code with tests, and created a pull request.</li>
+                </ul>
+            </div>
+
+            <div style="margin-bottom: 3px;">
+                <div class="item-header">
+                    <div class="item-title">Advanced Software Engineering Job Simulation - Walmart Global Tech</div>
+                    <div class="item-subtext">Aug 2026</div>
+                </div>
+                <ul class="bullets">
+                    <li>Completed practical tasks in advanced data structures, software architecture, relational database design, and data munging.</li>
+                </ul>
+            </div>
+
+            <div>
+                <div class="item-header">
+                    <div class="item-title">Cybersecurity Analyst Job Simulation - Tata</div>
+                    <div class="item-subtext">Aug 2026</div>
+                </div>
+                <ul class="bullets">
+                    <li>Worked on IAM fundamentals, strategy assessment, custom IAM solution design, and platform integration.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Projects -->
+        <div class="section">
+            <div class="section-title">PROJECTS</div>
+
+            <div style="margin-bottom: 3px;">
+                <div class="item-header">
+                    <div class="item-title">Notes Savior</div>
+                    <div class="item-subtext">React.js, Tailwind CSS, Firebase Authentication, Cloud Firestore</div>
+                </div>
+                <ul class="bullets">
+                    <li>Architected and deployed a smart student notes web app serving 100+ active student users, achieving 99.9% uptime via Firebase Cloud Firestore.</li>
+                </ul>
+            </div>
+
+            <div style="margin-bottom: 3px;">
+                <div class="item-header">
+                    <div class="item-title">Smart Challan Engine</div>
+                    <div class="item-subtext">Core Java, SQL</div>
+                </div>
+                <ul class="bullets">
+                    <li>Engineered an automated traffic challan management system, reducing manual record processing time by 35% using optimized SQL queries.</li>
+                </ul>
+            </div>
+
+            <div style="margin-bottom: 3px;">
+                <div class="item-header">
+                    <div class="item-title">Metro Route Checker</div>
+                    <div class="item-subtext">C/C++</div>
+                </div>
+                <ul class="bullets">
+                    <li>Developed a transit utility for optimal metro routes and station connectivity, using graph algorithms (BFS traversal) with adjacency-list and array-based structures.</li>
+                </ul>
+            </div>
+
+            <div>
+                <div class="item-header">
+                    <div class="item-title">ATM Simulator</div>
+                    <div class="item-subtext">C</div>
+                </div>
+                <ul class="bullets">
+                    <li>Implemented a console-based banking simulation for PIN verification, withdrawals, and balance inquiries, using structures and file handling for persistent account storage.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Education -->
+        <div class="section">
+            <div class="section-title">EDUCATION</div>
+            
+            <div style="margin-bottom: 3px;">
+                <div class="item-header">
+                    <div class="item-title">Bachelor of Computer Applications (BCA Science)</div>
+                    <div class="item-subtext">June 2025-May 2028</div>
+                </div>
+                <div class="item-subtitle">ASM College of Commerce, Science and Information Technology, Pune, Maharashtra (SPPU)</div>
+                <ul class="bullets">
+                    <li>Currently in 2nd Year | First Year CGPA: 7.77 out of 10.0 (Semester 1: 8.18, Semester 2: 7.36). Total Credits Earned: 44 of 44.</li>
+                </ul>
+            </div>
+
+            <div>
+                <div class="item-header">
+                    <div class="item-title">Higher Secondary Certificate (HSC), Arts Stream</div>
+                    <div class="item-subtext">June 2023-May 2025</div>
+                </div>
+                <div class="item-subtitle">Chhatrapati Shivaji College</div>
+                <ul class="bullets">
+                    <li>Percentage: 80.17 percent. Secured 2nd Rank in the college.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Certifications and Honors -->
+        <div class="section">
+            <div class="section-title">CERTIFICATIONS AND HONORS</div>
+            <ul class="cert-list">
+                <li><strong>College Rank Holder:</strong> Secured 2nd Rank in 12th HSC Examinations, 2025</li>
+                <li><strong>AWS Cloud Certification:</strong> Cloud infrastructure and foundational security, 2025 to 2026</li>
+                <li><strong>Advanced C Programming Certification:</strong> Memory execution, data structures, and low-level logic, 2026</li>
+                <li><strong>Advanced MS Excel and Word Certification:</strong> Data modeling, documentation, and office automation, 2026</li>
+                <li><strong>Leadership and Human Values Certificate:</strong> Team management, ethics, and professional communication, 2026</li>
+                <li><strong>Languages:</strong> English (Fluent), Hindi (Fluent), Marathi (Native, Fluent)</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleEditing() {
+            const content = document.getElementById('resume-content');
+            const btn = document.getElementById('toggleEditBtn');
+            const isEditable = content.getAttribute('contenteditable') === 'true';
+
+            if (isEditable) {
+                content.setAttribute('contenteditable', 'false');
+                btn.innerText = '✏️ Enable Edit Mode';
+                btn.style.backgroundColor = '#dd6b20';
+            } else {
+                content.setAttribute('contenteditable', 'true');
+                btn.innerText = '✅ Save/Disable Editing';
+                btn.style.backgroundColor = '#38a169';
+            }
+        }
+
+        function downloadPDF() {
+            const content = document.getElementById('resume-content');
+            // Turn off edit mode styling before opening print dialog
+            content.setAttribute('contenteditable', 'false');
+            const btn = document.getElementById('toggleEditBtn');
+            btn.innerText = '✏️ Enable Edit Mode';
+            btn.style.backgroundColor = '#dd6b20';
+            
+            window.print();
+        }
+    </script>
+</body>
+</html>
