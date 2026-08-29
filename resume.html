@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Resume Editor & Generator</title>
+    <title>ATS-Friendly Resume Editor & Builder</title>
+    <!-- Include PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <style>
         @page {
             size: A4;
@@ -17,233 +20,204 @@
         }
 
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-family: Arial, Helvetica, sans-serif; /* Clean ATS-Friendly Font */
             color: #1a202c;
-            line-height: 1.35;
-            font-size: 8.8pt;
+            line-height: 1.4;
+            font-size: 9.5pt;
+            background-color: #f7fafc;
         }
 
-        /* Action Buttons Styling */
+        /* Controls Container */
         .controls-container {
             text-align: center;
-            margin: 15px 0;
+            padding: 15px;
+            background: #edf2f7;
             display: flex;
             justify-content: center;
             gap: 12px;
             flex-wrap: wrap;
+            border-bottom: 2px solid #cbd5e0;
         }
 
         .btn {
             color: #ffffff;
             border: none;
             padding: 10px 18px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             border-radius: 5px;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
             transition: all 0.2s ease;
         }
 
-        .btn-upload {
-            background-color: #4a5568;
+        .btn-upload { background-color: #2b6cb0; }
+        .btn-upload:hover { background-color: #2c5282; }
+
+        .btn-download { background-color: #2f855a; }
+        .btn-download:hover { background-color: #276749; }
+
+        .btn-edit { background-color: #dd6b20; }
+        .btn-edit:hover { background-color: #c05621; }
+
+        .btn-ats { background-color: #805ad5; }
+        .btn-ats:hover { background-color: #6b46c1; }
+
+        /* ATS Feedback Box */
+        #ats-feedback-box {
+            max-width: 800px;
+            margin: 15px auto;
+            background: #ffffff;
+            border: 2px solid #805ad5;
+            border-radius: 8px;
+            padding: 15px;
+            display: none;
         }
 
-        .btn-upload:hover {
-            background-color: #2d3748;
+        .ats-score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
         }
 
-        .btn-download {
-            background-color: #1a365d;
+        .ats-score-badge {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2f855a;
         }
 
-        .btn-download:hover {
-            background-color: #2b6cb0;
+        .ats-suggestions {
+            font-size: 9pt;
+            color: #4a5568;
         }
 
-        .btn-edit {
-            background-color: #dd6b20;
+        .ats-suggestions li {
+            margin-bottom: 4px;
         }
 
-        .btn-edit:hover {
-            background-color: #c05621;
-        }
-
-        /* Editable Highlight indicator */
+        /* Editable Highlight Indicator */
         [contenteditable="true"] {
             outline: 1px dashed #3182ce;
-            background-color: rgba(235, 248, 255, 0.4);
+            background-color: rgba(235, 248, 255, 0.5);
+            padding: 4px;
         }
 
-        /* Hide controls during printing/saving PDF */
         @media print {
-            .controls-container {
-                display: none !important;
-            }
+            .controls-container, #ats-feedback-box { display: none !important; }
+            body { background-color: #ffffff; }
             [contenteditable="true"] {
                 outline: none !important;
                 background-color: transparent !important;
             }
         }
 
-        /* Header Styling */
+        /* Resume Content Wrapper */
+        #resume-content {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 25px 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* ATS Compatible Formatting Classes */
+        .pdf-line {
+            margin-bottom: 3px;
+            word-wrap: break-word;
+        }
+
         .header {
             text-align: center;
-            border-bottom: 2px solid #1a365d;
-            padding-bottom: 6px;
-            margin-bottom: 10px;
+            border-bottom: 2px solid #2b6cb0;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
         }
 
         .header h1 {
-            font-size: 18pt;
+            font-size: 20pt;
             color: #1a365d;
-            letter-spacing: 0.5px;
             text-transform: uppercase;
-            margin-bottom: 2px;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
         }
 
         .header .subtitle {
-            font-size: 9.5pt;
+            font-size: 10pt;
             font-weight: bold;
             color: #2b6cb0;
             margin-bottom: 4px;
         }
 
         .contact-info {
-            font-size: 8pt;
+            font-size: 8.5pt;
             color: #4a5568;
         }
 
-        .contact-info span {
-            margin: 0 3px;
-        }
-
-        .contact-info a {
-            color: #2b6cb0;
-            text-decoration: none;
-        }
-
-        /* Section Styling */
-        .section {
-            margin-bottom: 9px;
-        }
+        .section { margin-bottom: 12px; }
 
         .section-title {
-            font-size: 10pt;
+            font-size: 11pt;
             font-weight: bold;
             color: #1a365d;
             text-transform: uppercase;
             border-bottom: 1px solid #cbd5e0;
-            padding-bottom: 1px;
-            margin-bottom: 5px;
-            letter-spacing: 0.3px;
+            padding-bottom: 2px;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
         }
 
-        /* Summary */
-        .summary {
-            text-align: justify;
-            color: #2d3748;
-        }
+        .summary { text-align: justify; color: #2d3748; }
 
-        /* Skills */
-        .skills-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+        .item-header { display: flex; justify-content: space-between; font-weight: bold; color: #2d3748; }
+        .item-subtitle { font-style: italic; color: #4a5568; margin-bottom: 3px; font-size: 9pt; }
 
-        .skills-table td {
-            padding: 1.5px 0;
-            vertical-align: top;
-        }
-
-        .skill-category {
-            font-weight: bold;
-            width: 25%;
-            color: #2d3748;
-        }
-
-        .skill-list {
-            width: 75%;
-            color: #4a5568;
-        }
-
-        /* Experience & Projects */
-        .item-header {
-            display: table;
-            width: 100%;
-            margin-bottom: 1px;
-        }
-
-        .item-title {
-            display: table-cell;
-            font-weight: bold;
-            color: #2d3748;
-            text-align: left;
-        }
-
-        .item-subtext {
-            display: table-cell;
-            font-style: italic;
-            color: #4a5568;
-            text-align: right;
-            font-size: 8pt;
-        }
-
-        .item-subtitle {
-            font-style: italic;
-            color: #4a5568;
-            margin-bottom: 2px;
-            font-size: 8.5pt;
-        }
-
-        ul.bullets {
-            padding-left: 14px;
-            margin-top: 1px;
-        }
-
-        ul.bullets li {
-            margin-bottom: 2px;
-            color: #2d3748;
-            text-align: justify;
-        }
-
-        /* Certifications & Languages */
-        .cert-list {
-            padding-left: 14px;
-        }
-
-        .cert-list li {
-            margin-bottom: 1.5px;
-        }
+        ul.bullets { padding-left: 16px; margin-top: 2px; }
+        ul.bullets li { margin-bottom: 3px; color: #2d3748; text-align: justify; }
     </style>
 </head>
 <body>
 
-    <!-- Controls Container -->
+    <!-- Controls -->
     <div class="controls-container">
-        <!-- Hidden File Input -->
-        <input type="file" id="fileInput" accept=".html,.txt,.json" style="display: none;" onchange="uploadResume(event)">
+        <input type="file" id="fileInput" accept=".pdf,.html,.txt,.json" style="display: none;" onchange="handleFileUpload(event)">
         
-        <button class="btn btn-upload" onclick="document.getElementById('fileInput').click()">📄 Import Resume / File</button>
+        <button class="btn btn-upload" onclick="document.getElementById('fileInput').click()">📁 Upload PDF / Resume</button>
         <button class="btn btn-edit" id="toggleEditBtn" onclick="toggleEditing()">✏️ Toggle Edit Mode</button>
-        <button class="btn btn-download" onclick="downloadPDF()">📥 Export / Save to PDF</button>
+        <button class="btn btn-ats" onclick="analyzeATSScore()">📊 Check ATS Score</button>
+        <button class="btn btn-download" onclick="downloadPDF()">📥 Export PDF</button>
     </div>
 
-    <!-- Resume Content Wrapper -->
+    <!-- ATS Score Feedback Section -->
+    <div id="ats-feedback-box">
+        <div class="ats-score-header">
+            <h3>ATS Optimization & Formatting Score</h3>
+            <span class="ats-score-badge" id="ats-score-val">100%</span>
+        </div>
+        <ul class="ats-suggestions" id="ats-suggestions-list">
+            <li>✅ Excellent formatting! Standard standard ATS font family used.</li>
+            <li>✅ Clean section headings detected without tables or textboxes.</li>
+        </ul>
+    </div>
+
+    <!-- Clean Placeholder Resume Template -->
     <div id="resume-content" contenteditable="false">
         
         <!-- Header -->
         <div class="header">
-            <h1>JAY PAWAR</h1>
-            <div class="subtitle">Software Engineering Intern | Data Structures & Full Stack</div>
+            <h1>YOUR FULL NAME</h1>
+            <div class="subtitle">Target Job Title (e.g., Software Engineering Intern)</div>
             <div class="contact-info">
-                Moshi, Pune, Maharashtra 412105 <span>|</span> 
-                Phone: +91 83172 89128 <span>|</span> 
-                Email: jaypawar8399@gmail.com
+                City, State, Zip <span>|</span> 
+                Phone: +91 00000 00000 <span>|</span> 
+                Email: your.email@example.com
                 <br>
-                Portfolio: <a href="https://portfolio-website-eta-seven-24.vercel.app">portfolio-website-eta-seven-24.vercel.app</a> <span>|</span> 
-                GitHub: <a href="https://github.com/jay-soft-dev">github.com/jay-soft-dev</a> <span>|</span> 
-                LinkedIn: <a href="https://linkedin.com/in/jay-pawar99">linkedin.com/in/jay-pawar99</a>
+                Portfolio: portfolio.link <span>|</span> 
+                GitHub: github.com/username <span>|</span> 
+                LinkedIn: linkedin.com/in/username
             </div>
         </div>
 
@@ -251,173 +225,71 @@
         <div class="section">
             <div class="section-title">PROFESSIONAL SUMMARY</div>
             <div class="summary">
-                Second-year BCA (Science) student with strong foundations in Data Structures, Problem Solving, C/C++, and Full Stack Web Development (React.js, Node.js). Experienced in building system utilities and web applications, including a student notes platform with cloud authentication and a traffic challan management system. Seeking a Software Engineering Internship to apply core programming, problem-solving, and full stack development skills, available to start immediately.
+                Write a concise 3-4 sentence professional summary highlighting your core background, technical skills, key achievements, and current job objective.
             </div>
         </div>
 
         <!-- Technical Skills -->
         <div class="section">
             <div class="section-title">TECHNICAL SKILLS</div>
-            <table class="skills-table">
-                <tr>
-                    <td class="skill-category">Core Computer Science:</td>
-                    <td class="skill-list">Data Structures & Algorithms (DSA), C, C++ (STL), Core Java, Object-Oriented Programming (OOP)</td>
-                </tr>
-                <tr>
-                    <td class="skill-category">Software Engineering Tools:</td>
-                    <td class="skill-list">Git, GitHub, Linux/OS Concepts, VS Code, SQL, DBMS, Vercel, MS Office</td>
-                </tr>
-                <tr>
-                    <td class="skill-category">Web Development:</td>
-                    <td class="skill-list">React.js, Node.js, Express.js, Tailwind CSS, RESTful APIs, Firebase, HTML5, CSS3, JavaScript (ES6+)</td>
-                </tr>
-                <tr>
-                    <td class="skill-category">Soft Skills:</td>
-                    <td class="skill-list">Analytical Problem Solving, Technical Communication, Teamwork, Continuous Learning, Adaptability</td>
-                </tr>
-            </table>
+            <ul class="bullets">
+                <li><strong>Languages & Core:</strong> C, C++, Java, JavaScript, Data Structures & Algorithms</li>
+                <li><strong>Web & Tools:</strong> React.js, Node.js, HTML5, CSS3, SQL, Git, GitHub, VS Code</li>
+                <li><strong>Soft Skills:</strong> Analytical Thinking, Problem Solving, Communication, Team Collaboration</li>
+            </ul>
         </div>
 
         <!-- Experience -->
         <div class="section">
             <div class="section-title">EXPERIENCE</div>
             <div class="item-header">
-                <div class="item-title">Full Stack Developer and Freelancer</div>
-                <div class="item-subtext">2024-Present</div>
+                <div>Job Title / Role Name</div>
+                <div>MM/YYYY – Present</div>
             </div>
-            <div class="item-subtitle">Independent and Academic Projects | Available Immediately for Internship</div>
+            <div class="item-subtitle">Company / Organization Name | Location</div>
             <ul class="bullets">
-                <li>Architected and deployed full stack web applications using React.js, Node.js, Tailwind CSS, and Firebase, covering authentication, real-time data storage, and responsive UI.</li>
-                <li>Engineered 6 or more software applications and command-line tools using C, C++, Java, and web technologies to solve practical computational problems.</li>
-                <li>Integrated debugging and optimization practices across 15 or more academic code reviews, improving algorithm execution speed by 20 percent.</li>
-                <li>Successfully delivered 3+ commercial web projects for local clients, improving client web engagement and UI performance.</li>
+                <li>Detail your responsibilities and quantified accomplishments starting with strong action verbs.</li>
+                <li>Engineered scalable software solutions improving performance by XX%.</li>
             </ul>
-        </div>
-
-        <!-- Virtual Experience -->
-        <div class="section">
-            <div class="section-title">VIRTUAL EXPERIENCE - JOB SIMULATIONS (FORAGE)</div>
-            
-            <div style="margin-bottom: 3px;">
-                <div class="item-header">
-                    <div class="item-title">Software Engineering Job Simulation - Commonwealth Bank</div>
-                    <div class="item-subtext">Aug 2026</div>
-                </div>
-                <ul class="bullets">
-                    <li>Modified an existing .NET backend and React/Redux frontend per client requirements, covered code with tests, and created a pull request.</li>
-                </ul>
-            </div>
-
-            <div style="margin-bottom: 3px;">
-                <div class="item-header">
-                    <div class="item-title">Advanced Software Engineering Job Simulation - Walmart Global Tech</div>
-                    <div class="item-subtext">Aug 2026</div>
-                </div>
-                <ul class="bullets">
-                    <li>Completed practical tasks in advanced data structures, software architecture, relational database design, and data munging.</li>
-                </ul>
-            </div>
-
-            <div>
-                <div class="item-header">
-                    <div class="item-title">Cybersecurity Analyst Job Simulation - Tata</div>
-                    <div class="item-subtext">Aug 2026</div>
-                </div>
-                <ul class="bullets">
-                    <li>Worked on IAM fundamentals, strategy assessment, custom IAM solution design, and platform integration.</li>
-                </ul>
-            </div>
         </div>
 
         <!-- Projects -->
         <div class="section">
             <div class="section-title">PROJECTS</div>
-
-            <div style="margin-bottom: 3px;">
-                <div class="item-header">
-                    <div class="item-title">Notes Savior</div>
-                    <div class="item-subtext">React.js, Tailwind CSS, Firebase Authentication, Cloud Firestore</div>
-                </div>
-                <ul class="bullets">
-                    <li>Architected and deployed a smart student notes web app serving 100+ active student users, achieving 99.9% uptime via Firebase Cloud Firestore.</li>
-                </ul>
+            <div class="item-header">
+                <div>Project Name</div>
+                <div>Technologies Used</div>
             </div>
-
-            <div style="margin-bottom: 3px;">
-                <div class="item-header">
-                    <div class="item-title">Smart Challan Engine</div>
-                    <div class="item-subtext">Core Java, SQL</div>
-                </div>
-                <ul class="bullets">
-                    <li>Engineered an automated traffic challan management system, reducing manual record processing time by 35% using optimized SQL queries.</li>
-                </ul>
-            </div>
-
-            <div style="margin-bottom: 3px;">
-                <div class="item-header">
-                    <div class="item-title">Metro Route Checker</div>
-                    <div class="item-subtext">C/C++</div>
-                </div>
-                <ul class="bullets">
-                    <li>Developed a transit utility for optimal metro routes and station connectivity, using graph algorithms (BFS traversal) with adjacency-list and array-based structures.</li>
-                </ul>
-            </div>
-
-            <div>
-                <div class="item-header">
-                    <div class="item-title">ATM Simulator</div>
-                    <div class="item-subtext">C</div>
-                </div>
-                <ul class="bullets">
-                    <li>Implemented a console-based banking simulation for PIN verification, withdrawals, and balance inquiries, using structures and file handling for persistent account storage.</li>
-                </ul>
-            </div>
+            <ul class="bullets">
+                <li>Developed a responsive web application that improved user engagement by XX%.</li>
+                <li>Implemented REST APIs and databases for seamless data handling and security.</li>
+            </ul>
         </div>
 
         <!-- Education -->
         <div class="section">
             <div class="section-title">EDUCATION</div>
-            
-            <div style="margin-bottom: 3px;">
-                <div class="item-header">
-                    <div class="item-title">Bachelor of Computer Applications (BCA Science)</div>
-                    <div class="item-subtext">June 2025-May 2028</div>
-                </div>
-                <div class="item-subtitle">ASM College of Commerce, Science and Information Technology, Pune, Maharashtra (SPPU)</div>
-                <ul class="bullets">
-                    <li>Currently in 2nd Year | First Year CGPA: 7.77 out of 10.0 (Semester 1: 8.18, Semester 2: 7.36). Total Credits Earned: 44 of 44.</li>
-                </ul>
+            <div class="item-header">
+                <div>Degree Name (e.g., Bachelor of Computer Applications)</div>
+                <div>YYYY – YYYY</div>
             </div>
-
-            <div>
-                <div class="item-header">
-                    <div class="item-title">Higher Secondary Certificate (HSC), Arts Stream</div>
-                    <div class="item-subtext">June 2023-May 2025</div>
-                </div>
-                <div class="item-subtitle">Chhatrapati Shivaji College</div>
-                <ul class="bullets">
-                    <li>Percentage: 80.17 percent. Secured 2nd Rank in the college.</li>
-                </ul>
-            </div>
+            <div class="item-subtitle">University or College Name | CGPA / Percentage</div>
         </div>
 
-        <!-- Certifications and Honors -->
+        <!-- Certifications -->
         <div class="section">
             <div class="section-title">CERTIFICATIONS AND HONORS</div>
-            <ul class="cert-list">
-                <li><strong>College Rank Holder:</strong> Secured 2nd Rank in 12th HSC Examinations, 2025</li>
-                <li><strong>AWS Cloud Certification:</strong> Cloud infrastructure and foundational security, 2025 to 2026</li>
-                <li><strong>Advanced C Programming Certification:</strong> Memory execution, data structures, and low-level logic, 2026</li>
-                <li><strong>Advanced MS Excel and Word Certification:</strong> Data modeling, documentation, and office automation, 2026</li>
-                <li><strong>Leadership and Human Values Certificate:</strong> Team management, ethics, and professional communication, 2026</li>
-                <li><strong>Languages:</strong> English (Fluent), Hindi (Fluent), Marathi (Native, Fluent)</li>
+            <ul class="bullets">
+                <li>Certification Name – Issuing Authority (Year)</li>
+                <li>Honor / Award Name – Institution (Year)</li>
             </ul>
         </div>
 
     </div>
 
     <script>
-        // Toggle Screen Editing
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
         function toggleEditing() {
             const content = document.getElementById('resume-content');
             const btn = document.getElementById('toggleEditBtn');
@@ -434,19 +306,135 @@
             }
         }
 
-        // Upload custom file content
-        function uploadResume(event) {
+        function handleFileUpload(event) {
             const file = event.target.files[0];
-            if (file) {
+            if (!file) return;
+
+            if (file.type === "application/pdf" || file.name.endsWith('.pdf')) {
+                parseStructuredPDF(file);
+            } else {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     document.getElementById('resume-content').innerHTML = e.target.result;
+                    enableEditingDirectly();
+                    analyzeATSScore();
                 };
                 reader.readAsText(file);
             }
         }
 
-        // Save layout as PDF
+        // Parse PDF while maintaining Structural Layout
+        function parseStructuredPDF(file) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const typedarray = new Uint8Array(this.result);
+
+                pdfjsLib.getDocument(typedarray).promise.then(async function(pdf) {
+                    let htmlFormattedContent = '';
+
+                    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                        const page = await pdf.getPage(pageNum);
+                        const textContent = await page.getTextContent();
+                        
+                        let lastY = null;
+                        let pageLines = [];
+                        let currentLine = "";
+
+                        textContent.items.forEach(function(item) {
+                            const currentY = item.transform[5];
+
+                            if (lastY !== null && Math.abs(currentY - lastY) > 3) {
+                                pageLines.push(currentLine.trim());
+                                currentLine = item.str;
+                            } else {
+                                currentLine += (currentLine ? " " : "") + item.str;
+                            }
+                            lastY = currentY;
+                        });
+
+                        if (currentLine) pageLines.push(currentLine.trim());
+
+                        pageLines.forEach(line => {
+                            if (!line) return;
+
+                            if (line === line.toUpperCase() && line.length > 3 && !line.includes('|')) {
+                                htmlFormattedContent += `<div class="section-title" style="margin-top:10px;">${line}</div>`;
+                            } else if (line.startsWith('•') || line.startsWith('-')) {
+                                htmlFormattedContent += `<ul class="bullets"><li>${line.replace(/^[•-]\s*/, '')}</li></ul>`;
+                            } else {
+                                htmlFormattedContent += `<div class="pdf-line">${line}</div>`;
+                            }
+                        });
+                    }
+
+                    document.getElementById('resume-content').innerHTML = htmlFormattedContent;
+                    enableEditingDirectly();
+                    analyzeATSScore();
+                }).catch(function(error) {
+                    alert("PDF वाचताना अडचण आली. कृपया वैध PDF अपलोड करा.");
+                    console.error(error);
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function enableEditingDirectly() {
+            const content = document.getElementById('resume-content');
+            const btn = document.getElementById('toggleEditBtn');
+            content.setAttribute('contenteditable', 'true');
+            btn.innerText = '✅ Save/Disable Editing';
+            btn.style.backgroundColor = '#38a169';
+        }
+
+        // 100% ATS Score Analyzer Rule Engine
+        function analyzeATSScore() {
+            const content = document.getElementById('resume-content').innerText;
+            const htmlContent = document.getElementById('resume-content').innerHTML;
+            const box = document.getElementById('ats-feedback-box');
+            const scoreVal = document.getElementById('ats-score-val');
+            const sugList = document.getElementById('ats-suggestions-list');
+
+            box.style.display = 'block';
+            let score = 100;
+            let suggestions = [];
+
+            // Standard ATS Rules
+            if (!content.includes("PROFESSIONAL SUMMARY") && !content.includes("SUMMARY")) {
+                score -= 10;
+                suggestions.push("⚠️ 'PROFESSIONAL SUMMARY' हेडिंग जोडल्यास ATS ओळखणे सोपे जाते.");
+            }
+            if (!content.includes("EXPERIENCE")) {
+                score -= 15;
+                suggestions.push("❌ 'EXPERIENCE' हेडर सापडले नाही.");
+            }
+            if (!content.includes("PROJECTS")) {
+                score -= 10;
+                suggestions.push("⚠️ 'PROJECTS' हेडिंग ॲड करा.");
+            }
+            if (!content.includes("EDUCATION")) {
+                score -= 15;
+                suggestions.push("❌ 'EDUCATION' सेक्शन जोडणे आवश्यक आहे.");
+            }
+            if (!content.includes("SKILLS")) {
+                score -= 15;
+                suggestions.push("❌ 'TECHNICAL SKILLS' किंवा 'SKILLS' सेक्शन स्पष्ट ठेवा.");
+            }
+            if (htmlContent.includes('<table') && !htmlContent.includes('skills-table')) {
+                score -= 10;
+                suggestions.push("⚠️ ATS कॉम्प्लेक्स Tables नीट स्कॅन करू शकत नाही, सोपे Bullets वापरा.");
+            }
+
+            if (score === 100) {
+                suggestions.push("🎉 उत्तम! तुमचा रेझ्युमे फॉरमॅट १००% ATS Friendly आहे.");
+                scoreVal.style.color = "#2f855a";
+            } else {
+                scoreVal.style.color = score > 75 ? "#dd6b20" : "#e53e3e";
+            }
+
+            scoreVal.innerText = score + "%";
+            sugList.innerHTML = suggestions.map(item => `<li>${item}</li>`).join('');
+        }
+
         function downloadPDF() {
             const content = document.getElementById('resume-content');
             content.setAttribute('contenteditable', 'false');
