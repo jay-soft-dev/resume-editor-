@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Advanced ATS Resume Editor & Comprehensive Analyzer</title>
+    <title>Smart ATS Resume Editor & Interactive Error Fixer</title>
     <!-- Include PDF.js Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
@@ -25,25 +25,31 @@
             line-height: 1.4;
             font-size: 9.5pt;
             background-color: #f7fafc;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        /* Controls Container */
+        /* Top Controls Container */
         .controls-container {
             text-align: center;
-            padding: 15px;
+            padding: 12px;
             background: #edf2f7;
             display: flex;
             justify-content: center;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
             border-bottom: 2px solid #cbd5e0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .btn {
             color: #ffffff;
             border: none;
-            padding: 10px 18px;
-            font-size: 13px;
+            padding: 8px 15px;
+            font-size: 12px;
             font-weight: bold;
             border-radius: 5px;
             cursor: pointer;
@@ -63,10 +69,95 @@
         .btn-ats { background-color: #805ad5; }
         .btn-ats:hover { background-color: #6b46c1; }
 
+        .btn-fix {
+            background-color: #e53e3e;
+            color: #ffffff;
+            border: none;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+        .btn-fix:hover { background-color: #c53030; }
+
+        /* Main Workspace Layout (Sidebar + Preview) */
+        .main-workspace {
+            display: flex;
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Sidebar Style */
+        .sidebar {
+            width: 280px;
+            background: #ffffff;
+            border-right: 2px solid #e2e8f0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .sidebar-title {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #2d3748;
+            border-bottom: 2px solid #805ad5;
+            padding-bottom: 5px;
+        }
+
+        .template-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #faf5ff;
+        }
+
+        .template-card:hover, .template-card.active {
+            border-color: #805ad5;
+            background: #f3e8ff;
+            box-shadow: 0 2px 5px rgba(128, 90, 213, 0.2);
+        }
+
+        .template-card h4 {
+            font-size: 10pt;
+            color: #553c9a;
+            margin-bottom: 4px;
+        }
+
+        .template-card p {
+            font-size: 8pt;
+            color: #4a5568;
+        }
+
+        .badge-100 {
+            display: inline-block;
+            background: #38a169;
+            color: #fff;
+            font-size: 7.5pt;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        /* Main Content View */
+        .content-area {
+            flex: 1;
+            padding: 20px;
+            position: relative;
+        }
+
         /* ATS Feedback Box */
         #ats-feedback-box {
             max-width: 800px;
-            margin: 15px auto;
+            margin: 0 auto 15px auto;
             background: #ffffff;
             border: 2px solid #805ad5;
             border-radius: 8px;
@@ -95,191 +186,306 @@
         }
 
         .ats-suggestions li {
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
-        /* Editable Highlight Indicator */
-        [contenteditable="true"] {
-            outline: 1px dashed #3182ce;
-            background-color: rgba(235, 248, 255, 0.5);
-            padding: 4px;
+        /* Interactive Red Underline Error Styling */
+        .ats-error-clickable {
+            border-bottom: 2px dashed #e53e3e !important;
+            background-color: #fff5f5 !important;
+            color: #c53030 !important;
+            padding: 0 4px;
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+            font-weight: bold;
+        }
+        .ats-error-clickable:hover {
+            background-color: #fed7d7 !important;
         }
 
-        @media print {
-            .controls-container, #ats-feedback-box { display: none !important; }
-            body { background-color: #ffffff; }
-            [contenteditable="true"] {
-                outline: none !important;
-                background-color: transparent !important;
-            }
+        /* Suggestion Modal Box */
+        .fix-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 420px;
+            background: #ffffff;
+            border: 2px solid #805ad5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 18px;
+            z-index: 1000;
+        }
+
+        .fix-modal h4 {
+            color: #e53e3e;
+            font-size: 11pt;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .fix-modal-diff {
+            font-size: 9pt;
+            background: #f7fafc;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 12px;
+        }
+
+        .fix-modal-diff .old-val {
+            color: #e53e3e;
+            text-decoration: line-through;
+            font-weight: bold;
+        }
+
+        .fix-modal-diff .new-val {
+            color: #2f855a;
+            font-weight: bold;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: 999;
         }
 
         /* Resume Content Wrapper */
         #resume-content {
             width: 100%;
             max-width: 800px;
-            margin: 20px auto;
+            margin: 0 auto;
             background: #fff;
             padding: 25px 30px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
-        .pdf-line {
-            margin-bottom: 3px;
-            word-wrap: break-word;
+        [contenteditable="true"] {
+            outline: 1px dashed #3182ce;
+            background-color: rgba(235, 248, 255, 0.3);
+            padding: 4px;
         }
 
-        .header {
-            text-align: center;
-            border-bottom: 2px solid #2b6cb0;
-            padding-bottom: 8px;
-            margin-bottom: 12px;
+        @media print {
+            .controls-container, .sidebar, #ats-feedback-box, .btn-fix, .fix-modal, .modal-backdrop { display: none !important; }
+            body { background-color: #ffffff; }
+            .main-workspace { display: block; }
+            .content-area { padding: 0; }
+            #resume-content { box-shadow: none; padding: 0; }
+            [contenteditable="true"] {
+                outline: none !important;
+                background-color: transparent !important;
+            }
+            .ats-error-clickable {
+                border-bottom: none !important;
+                background-color: transparent !important;
+                color: inherit !important;
+            }
         }
 
-        .header h1 {
-            font-size: 20pt;
-            color: #1a365d;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
+        /* TEMPLATE STYLES */
 
-        .header .subtitle {
-            font-size: 10pt;
-            font-weight: bold;
-            color: #2b6cb0;
-            margin-bottom: 4px;
-        }
+        /* Template 1: Standard Professional (Default) */
+        .tpl-standard .header { text-align: center; border-bottom: 2px solid #2b6cb0; padding-bottom: 8px; margin-bottom: 12px; }
+        .tpl-standard .header h1 { font-size: 20pt; color: #1a365d; text-transform: uppercase; margin-bottom: 4px; }
+        .tpl-standard .subtitle { font-size: 10pt; font-weight: bold; color: #2b6cb0; margin-bottom: 4px; }
+        .tpl-standard .contact-info { font-size: 8.5pt; color: #4a5568; }
+        .tpl-standard .section-title { font-size: 11pt; font-weight: bold; color: #1a365d; text-transform: uppercase; border-bottom: 1px solid #cbd5e0; padding-bottom: 2px; margin-bottom: 6px; }
 
-        .contact-info {
-            font-size: 8.5pt;
-            color: #4a5568;
-        }
+        /* Template 2: Modern Minimalist */
+        .tpl-modern .header { text-align: left; border-bottom: 2px solid #2d3748; padding-bottom: 10px; margin-bottom: 14px; }
+        .tpl-modern .header h1 { font-size: 22pt; color: #2d3748; text-transform: uppercase; }
+        .tpl-modern .subtitle { font-size: 10.5pt; font-weight: bold; color: #4a5568; margin-bottom: 4px; }
+        .tpl-modern .contact-info { font-size: 8.5pt; color: #718096; }
+        .tpl-modern .section-title { font-size: 11pt; font-weight: bold; color: #2d3748; text-transform: uppercase; background: #edf2f7; padding: 3px 6px; margin-bottom: 8px; }
 
+        /* Template 3: Classic Executive */
+        .tpl-classic .header { text-align: center; border-bottom: 1px dashed #4a5568; padding-bottom: 10px; margin-bottom: 12px; }
+        .tpl-classic .header h1 { font-size: 19pt; color: #000; letter-spacing: 1px; }
+        .tpl-classic .subtitle { font-size: 10pt; font-style: italic; color: #2d3748; margin-bottom: 4px; }
+        .tpl-classic .contact-info { font-size: 8.5pt; color: #2d3748; }
+        .tpl-classic .section-title { font-size: 11pt; font-weight: bold; color: #000; text-transform: uppercase; text-align: center; border-bottom: 1px solid #000; padding-bottom: 2px; margin-bottom: 8px; }
+
+        /* Shared Resume Structure */
         .section { margin-bottom: 12px; }
-
-        .section-title {
-            font-size: 11pt;
-            font-weight: bold;
-            color: #1a365d;
-            text-transform: uppercase;
-            border-bottom: 1px solid #cbd5e0;
-            padding-bottom: 2px;
-            margin-bottom: 6px;
-            letter-spacing: 0.5px;
-        }
-
         .summary { text-align: justify; color: #2d3748; }
-
         .item-header { display: flex; justify-content: space-between; font-weight: bold; color: #2d3748; }
         .item-subtitle { font-style: italic; color: #4a5568; margin-bottom: 3px; font-size: 9pt; }
-
         ul.bullets { padding-left: 16px; margin-top: 2px; }
         ul.bullets li { margin-bottom: 3px; color: #2d3748; text-align: justify; }
     </style>
 </head>
 <body>
 
-    <!-- Control Actions -->
+    <!-- Actions Control Panel -->
     <div class="controls-container">
         <input type="file" id="fileInput" accept=".pdf,.html,.txt,.json" style="display: none;" onchange="handleFileUpload(event)">
         
         <button class="btn btn-upload" onclick="document.getElementById('fileInput').click()">📁 Upload PDF / Resume</button>
         <button class="btn btn-edit" id="toggleEditBtn" onclick="toggleEditing()">✏️ Toggle Edit Mode</button>
-        <button class="btn btn-ats" onclick="analyzeATSScore()">📊 Real ATS Check</button>
+        <button class="btn btn-ats" onclick="analyzeATSScore()">📊 Real ATS Check & Highlight Errors</button>
         <button class="btn btn-download" onclick="downloadPDF()">📥 Export PDF</button>
     </div>
 
-    <!-- ATS Score Feedback Layer -->
-    <div id="ats-feedback-box">
-        <div class="ats-score-header">
-            <h3>Real ATS Optimization & Content Score</h3>
-            <span class="ats-score-badge" id="ats-score-val">--%</span>
+    <!-- Main Workspace -->
+    <div class="main-workspace">
+        
+        <!-- Sidebar Templates Panel -->
+        <div class="sidebar">
+            <div class="sidebar-title">⚡ 100% ATS Templates</div>
+            
+            <div class="template-card active" onclick="applyTemplate('tpl-standard', this)">
+                <h4>1. Standard Professional</h4>
+                <p>Clean layout with blue accents. Optimal for Tech & Engineering roles.</p>
+                <span class="badge-100">100% ATS Ready</span>
+            </div>
+
+            <div class="template-card" onclick="applyTemplate('tpl-modern', this)">
+                <h4>2. Modern Minimalist</h4>
+                <p>Left-aligned layout with shaded section headers.</p>
+                <span class="badge-100">100% ATS Ready</span>
+            </div>
+
+            <div class="template-card" onclick="applyTemplate('tpl-classic', this)">
+                <h4>3. Classic Executive</h4>
+                <p>Traditional centered layout with minimalist line dividers.</p>
+                <span class="badge-100">100% ATS Ready</span>
+            </div>
         </div>
-        <ul class="ats-suggestions" id="ats-suggestions-list">
-            <li>PDF अपलोड करा किंवा 'Real ATS Check' बटणावर क्लिक करा.</li>
-        </ul>
+
+        <!-- Content Area -->
+        <div class="content-area">
+
+            <!-- ATS Feedback Box -->
+            <div id="ats-feedback-box">
+                <div class="ats-score-header">
+                    <h3>ATS Optimization & Real-Time Error Analysis</h3>
+                    <span class="ats-score-badge" id="ats-score-val">--%</span>
+                </div>
+                <ul class="ats-suggestions" id="ats-suggestions-list">
+                    <li>Upload a resume or click 'Real ATS Check' to analyze your score.</li>
+                </ul>
+            </div>
+
+            <!-- Resume Content Wrapper -->
+            <div id="resume-content" class="tpl-standard" contenteditable="false">
+                
+                <div class="header">
+                    <h1>YOUR FULL NAME</h1>
+                    <div class="subtitle">Software Engineering Intern</div>
+                    <div class="contact-info">
+                        City, State, Zip <span>|</span> 
+                        Phone: +91 00000 00000 <span>|</span> 
+                        Email: your.email@example.com
+                        <br>
+                        Portfolio: portfolio.link <span>|</span> 
+                        GitHub: github.com/username <span>|</span> 
+                        LinkedIn: linkedin.com/in/username
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">PROFESSIONAL SUMMARY</div>
+                    <div class="summary">
+                        Second-year BCA (Science) student with strong foundations in Data Structures, Problem Solving, C/C++, and Full Stack Web Development (React.js, Node.js). Seeking a Software Engineering Internship to apply core programming skills.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">TECHNICAL SKILLS</div>
+                    <ul class="bullets">
+                        <li><strong>Core CS:</strong> Data Structures & Algorithms, C, C++, Core Java, OOP</li>
+                        <li><strong>Web Tools:</strong> React.js, Node.js, Express.js, Tailwind CSS, RESTful APIs, Firebase, SQL</li>
+                        <li><strong>Soft Skills:</strong> Analytical Problem Solving, Technical Communication, Teamwork</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">EXPERIENCE</div>
+                    <div class="item-header">
+                        <div>Full Stack Developer Intern</div>
+                        <div>2024 – Present</div>
+                    </div>
+                    <div class="item-subtitle">Independent Projects | Pune, Maharashtra</div>
+                    <ul class="bullets">
+                        <li>Architected and deployed full-stack web applications using React.js, Node.js, and Firebase.</li>
+                        <li>Engineered software tools and optimized execution speed by 20%.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">PROJECTS</div>
+                    <div class="item-header">
+                        <div>Notes Savior</div>
+                        <div>React.js, Node.js, Firebase</div>
+                    </div>
+                    <ul class="bullets">
+                        <li>Architected a smart student notes platform serving 100+ users with 99.9% uptime.</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">EDUCATION</div>
+                    <div class="item-header">
+                        <div>Bachelor of Computer Applications (BCA Science)</div>
+                        <div>2025 – 2028</div>
+                    </div>
+                    <div class="item-subtitle">ASM CSIT, SPPU University | CGPA: 7.77 / 10.0</div>
+
+                    <div class="item-header" style="margin-top: 6px;">
+                        <div>Higher Secondary Certificate (HSC)</div>
+                        <div>2023 – 2025</div>
+                    </div>
+                    <div class="item-subtitle">Chhatrapati Shivaji College | Secured 2nd Rank (80.17%)</div>
+                </div>
+
+            </div>
+        </div>
     </div>
 
-    <!-- Clean Starter Template -->
-    <div id="resume-content" contenteditable="false">
-        
-        <div class="header">
-            <h1>YOUR FULL NAME</h1>
-            <div class="subtitle">Target Job Title (e.g., Software Engineering Intern)</div>
-            <div class="contact-info">
-                City, State, Zip <span>|</span> 
-                Phone: +91 00000 00000 <span>|</span> 
-                Email: your.email@example.com
-                <br>
-                Portfolio: portfolio.link <span>|</span> 
-                GitHub: github.com/username <span>|</span> 
-                LinkedIn: linkedin.com/in/username
-            </div>
+    <!-- Interactive Fix Suggestion Modal -->
+    <div class="modal-backdrop" id="modalBackdrop" onclick="closeFixModal()"></div>
+    <div class="fix-modal" id="fixModal">
+        <h4>🚨 ATS Optimization Suggestion</h4>
+        <div class="fix-modal-diff">
+            <p style="margin-bottom: 4px;"><strong>Issue Identified:</strong> <span id="modalIssueText"></span></p>
+            <p style="margin-bottom: 4px;"><strong>Original:</strong> <span class="old-val" id="modalOldVal"></span></p>
+            <p><strong>Suggested Fix:</strong> <span class="new-val" id="modalNewVal"></span></p>
         </div>
-
-        <div class="section">
-            <div class="section-title">PROFESSIONAL SUMMARY</div>
-            <div class="summary">
-                Write a concise 3-4 sentence summary highlighting your core background, technical skills, key achievements, and job objective.
-            </div>
+        <div class="modal-actions">
+            <button class="btn" style="background-color: #718096;" onclick="closeFixModal()">Cancel</button>
+            <button class="btn btn-download" id="modalApplyBtn">Apply Fix</button>
         </div>
-
-        <div class="section">
-            <div class="section-title">TECHNICAL SKILLS</div>
-            <ul class="bullets">
-                <li><strong>Languages & Core:</strong> Data Structures & Algorithms, C, C++, Core Java, JavaScript</li>
-                <li><strong>Web & Tools:</strong> React.js, Node.js, Express.js, SQL, Git, GitHub, VS Code</li>
-                <li><strong>Soft Skills:</strong> Analytical Problem Solving, Communication, Teamwork</li>
-            </ul>
-        </div>
-
-        <div class="section">
-            <div class="section-title">EXPERIENCE</div>
-            <div class="item-header">
-                <div>Job Title / Role Name</div>
-                <div>MM/YYYY – Present</div>
-            </div>
-            <div class="item-subtitle">Company / Organization Name | Location</div>
-            <ul class="bullets">
-                <li>Engineered scalable software solutions improving system efficiency by 20%.</li>
-                <li>Collaborated with team members to deliver high-quality code.</li>
-            </ul>
-        </div>
-
-        <div class="section">
-            <div class="section-title">PROJECTS</div>
-            <div class="item-header">
-                <div>Project Name</div>
-                <div>Technologies Used</div>
-            </div>
-            <ul class="bullets">
-                <li>Architected a full-stack application serving 100+ active users with 99.9% uptime.</li>
-                <li>Optimized database queries reducing overall processing time by 35%.</li>
-            </ul>
-        </div>
-
-        <div class="section">
-            <div class="section-title">EDUCATION</div>
-            <div class="item-header">
-                <div>Bachelor of Computer Applications (BCA Science)</div>
-                <div>YYYY – YYYY</div>
-            </div>
-            <div class="item-subtitle">University or College Name | CGPA / Percentage</div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">CERTIFICATIONS AND HONORS</div>
-            <ul class="bullets">
-                <li>Cloud / Technical Certification – Issuing Authority (Year)</li>
-                <li>Academic Award / Rank – Institution (Year)</li>
-            </ul>
-        </div>
-
     </div>
 
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+        let activeTargetElement = null;
+
+        // Apply Template Styles
+        function applyTemplate(tplName, cardEl) {
+            const content = document.getElementById('resume-content');
+            content.className = tplName;
+
+            document.querySelectorAll('.template-card').forEach(card => card.classList.remove('active'));
+            if (cardEl) cardEl.classList.add('active');
+
+            analyzeATSScore();
+        }
 
         function toggleEditing() {
             const content = document.getElementById('resume-content');
@@ -361,7 +567,7 @@
                     enableEditingDirectly();
                     analyzeATSScore();
                 }).catch(function(error) {
-                    alert("PDF वाचताना अडचण आली. कृपया वैध PDF अपलोड करा.");
+                    alert("Error parsing PDF file.");
                     console.error(error);
                 });
             };
@@ -376,10 +582,11 @@
             btn.style.backgroundColor = '#38a169';
         }
 
-        // Comprehensive Real ATS Score Engine
+        // Real-Time ATS Checker with Clickable Red Underlines
         function analyzeATSScore() {
-            const textContent = document.getElementById('resume-content').innerText;
-            const htmlContent = document.getElementById('resume-content').innerHTML;
+            const contentDiv = document.getElementById('resume-content');
+            let htmlContent = contentDiv.innerHTML;
+            const textContent = contentDiv.innerText;
             const box = document.getElementById('ats-feedback-box');
             const scoreVal = document.getElementById('ats-score-val');
             const sugList = document.getElementById('ats-suggestions-list');
@@ -388,68 +595,63 @@
             let score = 100;
             let suggestions = [];
 
-            // 1. Structural Section Headings (Standard ATS Rule)
+            // Reset existing error underlines before evaluation
+            const existingHighlights = contentDiv.querySelectorAll('.ats-error-clickable');
+            existingHighlights.forEach(el => {
+                const parent = el.parentNode;
+                parent.replaceChild(document.createTextNode(el.innerText), el);
+            });
+
+            // 1. Check & Highlight "Arts Stream"
+            if (textContent.toLowerCase().includes("arts stream")) {
+                score -= 8;
+                contentDiv.innerHTML = contentDiv.innerHTML.replace(
+                    /Arts Stream/gi,
+                    `<span class="ats-error-clickable" onclick="openFixModal(this, 'Arts Stream', '', 'Non-technical keyword may trigger ATS filter')">Arts Stream</span>`
+                );
+
+                suggestions.push(`🚨 <strong>Red Flag:</strong> 'Arts Stream' highlighted below. Click on the red underlined text to view details and remove it.`);
+            }
+
+            // 2. Check Bullet Points Formatting
+            const hasHtmlBullets = htmlContent.includes('<ul') && htmlContent.includes('<li');
+            const hasSymbolBullets = textContent.includes('•') || textContent.includes('-');
+
+            if (!hasHtmlBullets && !hasSymbolBullets) {
+                score -= 5;
+                suggestions.push(`
+                    ⚠️ <strong>Formatting:</strong> Bullet points are missing. 
+                    <button class="btn btn-fix" onclick="fixBulletPoints()">⚡ Click to Format Bullets</button>
+                `);
+            }
+
+            // 3. Check Section Headings
             const requiredSections = [
-                { title: "SUMMARY", penalty: 6, msg: "⚠️ 'PROFESSIONAL SUMMARY' हेडर जोडा." },
-                { title: "EXPERIENCE", penalty: 10, msg: "❌ 'EXPERIENCE' हेडर स्पष्ट दिसत नाही." },
-                { title: "PROJECTS", penalty: 8, msg: "⚠️ 'PROJECTS' हेडर जोडा." },
-                { title: "EDUCATION", penalty: 10, msg: "❌ 'EDUCATION' हेडर missing आहे." },
-                { title: "SKILLS", penalty: 10, msg: "❌ 'TECHNICAL SKILLS' किंवा 'SKILLS' हेडर ॲड करा." }
+                { title: "SUMMARY", penalty: 6, name: "PROFESSIONAL SUMMARY" },
+                { title: "EXPERIENCE", penalty: 10, name: "EXPERIENCE" },
+                { title: "PROJECTS", penalty: 8, name: "PROJECTS" },
+                { title: "EDUCATION", penalty: 10, name: "EDUCATION" },
+                { title: "SKILLS", penalty: 10, name: "TECHNICAL SKILLS" }
             ];
 
             requiredSections.forEach(sec => {
                 if (!textContent.toUpperCase().includes(sec.title)) {
                     score -= sec.penalty;
-                    suggestions.push(sec.msg);
+                    suggestions.push(`❌ <strong>Missing Section:</strong> '${sec.name}' standard heading is required.`);
                 }
             });
 
-            // 2. Action Verbs Check
-            const actionVerbs = ["ARCHITECTED", "ENGINEERED", "DEVELOPED", "BUILT", "CREATED", "OPTIMIZED", "IMPLEMENTED", "MODIFIED", "DEPLOYED", "DESIGNED"];
-            let foundVerbs = actionVerbs.filter(verb => textContent.toUpperCase().includes(verb));
-            if (foundVerbs.length < 3) {
-                score -= 5;
-                suggestions.push("💡 Tip: अनुभवाचे किंवा प्रोजेक्टचे वर्णन करताना Strong Action Verbs (उदा. Engineered, Architected, Optimized) वापरा.");
-            }
-
-            // 3. Quantifiable Impact/Metrics Check (% or numbers)
+            // 4. Quantifiable Impact Metrics
             const metricRegex = /\d+%/g;
             const numberRegex = /\d+\+/g;
             if (!metricRegex.test(textContent) && !numberRegex.test(textContent)) {
                 score -= 5;
-                suggestions.push("💡 Tip: कामाचा प्रभाव दर्शवण्यासाठी सेव्हिंग, परफॉर्मन्स किंवा युझर्सचे आकडे जोडा (उदा. 35% time reduced, 100+ active users).");
+                suggestions.push("💡 <strong>Quantifiable Impact:</strong> Add measurable numbers (e.g., 35% performance improvement, 100+ users).");
             }
 
-            // 4. Tech Keywords Check
-            const coreKeywords = ["REACT", "NODE", "SQL", "GIT", "C++", "C", "JAVA", "DATA STRUCTURES", "API", "FIREBASE"];
-            let matchedKeywords = coreKeywords.filter(kw => textContent.toUpperCase().includes(kw));
-            if (matchedKeywords.length < 4) {
-                score -= 8;
-                suggestions.push("⚠️ Tech Skills कमी आढळले. मुख्य कीवर्ड्स (React, Node, SQL, DSA) समाविष्ट करा.");
-            }
-
-            // 5. Red Flag: Arts Stream in Tech Resume
-            if (textContent.toLowerCase().includes("arts stream")) {
-                score -= 4;
-                suggestions.push("💡 Tip: Tech/BCA रोलसाठी HSC मधील 'Arts Stream' शब्द काढून फक्त 'Higher Secondary Certificate (HSC)' ठेवा.");
-            }
-
-            // 6. Formatting: Bullet Points Check
-            if (!htmlContent.includes('<ul') && !htmlContent.includes('<li') && !textContent.includes('•')) {
-                score -= 5;
-                suggestions.push("⚠️ पॅराग्राफऐवजी माहिती स्पष्ट Bullet Points (•) मध्ये लिहा.");
-            }
-
-            // 7. Content Length Optimization Check
-            const wordCount = textContent.split(/\s+/).length;
-            if (wordCount < 150) {
-                score -= 8;
-                suggestions.push("⚠️ रेझ्युमेमध्ये माहिती खूप कमी वाटत आहे (किमान 200-400 शब्द असावेत).");
-            }
-
-            // Render Output
+            // Display Score
             if (score === 100) {
-                suggestions.push("🎉 उत्तम! तुमचा रेझ्युमे फॉरमॅट आणि कंटेंट १००% ATS-Friendly आहे.");
+                suggestions.push("🎉 <strong>Great Job!</strong> Resume format is 100% ATS-Friendly.");
                 scoreVal.style.color = "#2f855a";
             } else {
                 scoreVal.style.color = score >= 85 ? "#2b6cb0" : (score >= 70 ? "#dd6b20" : "#e53e3e");
@@ -459,9 +661,62 @@
             sugList.innerHTML = suggestions.map(item => `<li>${item}</li>`).join('');
         }
 
+        // Open Fix Modal Window
+        function openFixModal(element, oldText, newText, issueDescription) {
+            activeTargetElement = element;
+            document.getElementById('modalIssueText').innerText = issueDescription;
+            document.getElementById('modalOldVal').innerText = oldText;
+            document.getElementById('modalNewVal').innerText = newText ? newText : "[Remove Text]";
+
+            const applyBtn = document.getElementById('modalApplyBtn');
+            applyBtn.onclick = function() {
+                if (newText) {
+                    activeTargetElement.outerHTML = newText;
+                } else {
+                    activeTargetElement.remove();
+                }
+                closeFixModal();
+                analyzeATSScore();
+            };
+
+            document.getElementById('modalBackdrop').style.display = 'block';
+            document.getElementById('fixModal').style.display = 'block';
+        }
+
+        function closeFixModal() {
+            document.getElementById('modalBackdrop').style.display = 'none';
+            document.getElementById('fixModal').style.display = 'none';
+            activeTargetElement = null;
+        }
+
+        function fixBulletPoints() {
+            const contentDiv = document.getElementById('resume-content');
+            const pdfLines = contentDiv.querySelectorAll('.pdf-line');
+            
+            if (pdfLines.length > 0) {
+                pdfLines.forEach(line => {
+                    const text = line.innerText.trim();
+                    if (text && !line.previousElementSibling?.classList.contains('section-title')) {
+                        const ul = document.createElement('ul');
+                        ul.className = 'bullets';
+                        ul.innerHTML = `<li>${text.replace(/^[•\-\*]\s*/, '')}</li>`;
+                        line.parentNode.replaceChild(ul, line);
+                    }
+                });
+            }
+            analyzeATSScore();
+        }
+
         function downloadPDF() {
             const content = document.getElementById('resume-content');
             content.setAttribute('contenteditable', 'false');
+            
+            const existingHighlights = content.querySelectorAll('.ats-error-clickable');
+            existingHighlights.forEach(el => {
+                const parent = el.parentNode;
+                parent.replaceChild(document.createTextNode(el.innerText), el);
+            });
+
             const btn = document.getElementById('toggleEditBtn');
             btn.innerText = '✏️ Toggle Edit Mode';
             btn.style.backgroundColor = '#dd6b20';
