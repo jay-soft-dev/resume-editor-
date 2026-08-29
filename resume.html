@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ATS-Friendly Resume Editor & Builder</title>
+    <title>ATS-Friendly Resume Editor & Smart Analyzer</title>
     <!-- Include PDF.js Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
@@ -20,7 +20,7 @@
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif; /* Clean ATS-Friendly Font */
+            font-family: Arial, Helvetica, sans-serif;
             color: #1a202c;
             line-height: 1.4;
             font-size: 9.5pt;
@@ -84,18 +84,19 @@
         }
 
         .ats-score-badge {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
             color: #2f855a;
         }
 
         .ats-suggestions {
-            font-size: 9pt;
+            font-size: 9.5pt;
             color: #4a5568;
+            padding-left: 20px;
         }
 
         .ats-suggestions li {
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
 
         /* Editable Highlight Indicator */
@@ -124,7 +125,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
-        /* ATS Compatible Formatting Classes */
         .pdf-line {
             margin-bottom: 3px;
             word-wrap: break-word;
@@ -181,7 +181,7 @@
 </head>
 <body>
 
-    <!-- Controls -->
+    <!-- Control Actions -->
     <div class="controls-container">
         <input type="file" id="fileInput" accept=".pdf,.html,.txt,.json" style="display: none;" onchange="handleFileUpload(event)">
         
@@ -191,22 +191,20 @@
         <button class="btn btn-download" onclick="downloadPDF()">📥 Export PDF</button>
     </div>
 
-    <!-- ATS Score Feedback Section -->
+    <!-- ATS Score Feedback Layer -->
     <div id="ats-feedback-box">
         <div class="ats-score-header">
-            <h3>ATS Optimization & Formatting Score</h3>
-            <span class="ats-score-badge" id="ats-score-val">100%</span>
+            <h3>ATS Optimization & Content Score</h3>
+            <span class="ats-score-badge" id="ats-score-val">--%</span>
         </div>
         <ul class="ats-suggestions" id="ats-suggestions-list">
-            <li>✅ Excellent formatting! Standard standard ATS font family used.</li>
-            <li>✅ Clean section headings detected without tables or textboxes.</li>
+            <li>PDF अपलोड करा किंवा 'Check ATS Score' बटणावर क्लिक करा.</li>
         </ul>
     </div>
 
-    <!-- Clean Placeholder Resume Template -->
+    <!-- Clean Starter Template -->
     <div id="resume-content" contenteditable="false">
         
-        <!-- Header -->
         <div class="header">
             <h1>YOUR FULL NAME</h1>
             <div class="subtitle">Target Job Title (e.g., Software Engineering Intern)</div>
@@ -221,25 +219,22 @@
             </div>
         </div>
 
-        <!-- Professional Summary -->
         <div class="section">
             <div class="section-title">PROFESSIONAL SUMMARY</div>
             <div class="summary">
-                Write a concise 3-4 sentence professional summary highlighting your core background, technical skills, key achievements, and current job objective.
+                Write a concise 3-4 sentence summary highlighting your core background, technical skills, key achievements, and job objective.
             </div>
         </div>
 
-        <!-- Technical Skills -->
         <div class="section">
             <div class="section-title">TECHNICAL SKILLS</div>
             <ul class="bullets">
-                <li><strong>Languages & Core:</strong> C, C++, Java, JavaScript, Data Structures & Algorithms</li>
-                <li><strong>Web & Tools:</strong> React.js, Node.js, HTML5, CSS3, SQL, Git, GitHub, VS Code</li>
-                <li><strong>Soft Skills:</strong> Analytical Thinking, Problem Solving, Communication, Team Collaboration</li>
+                <li><strong>Languages & Core:</strong> Data Structures & Algorithms, C, C++, Core Java, JavaScript</li>
+                <li><strong>Web & Tools:</strong> React.js, Node.js, Express.js, SQL, Git, GitHub, VS Code</li>
+                <li><strong>Soft Skills:</strong> Analytical Problem Solving, Communication, Teamwork</li>
             </ul>
         </div>
 
-        <!-- Experience -->
         <div class="section">
             <div class="section-title">EXPERIENCE</div>
             <div class="item-header">
@@ -248,12 +243,11 @@
             </div>
             <div class="item-subtitle">Company / Organization Name | Location</div>
             <ul class="bullets">
-                <li>Detail your responsibilities and quantified accomplishments starting with strong action verbs.</li>
-                <li>Engineered scalable software solutions improving performance by XX%.</li>
+                <li>Engineered scalable software solutions improving system efficiency by 20%.</li>
+                <li>Collaborated with team members to deliver high-quality code.</li>
             </ul>
         </div>
 
-        <!-- Projects -->
         <div class="section">
             <div class="section-title">PROJECTS</div>
             <div class="item-header">
@@ -261,27 +255,25 @@
                 <div>Technologies Used</div>
             </div>
             <ul class="bullets">
-                <li>Developed a responsive web application that improved user engagement by XX%.</li>
-                <li>Implemented REST APIs and databases for seamless data handling and security.</li>
+                <li>Architected a full-stack application serving active users with high reliability.</li>
+                <li>Optimized database queries reducing overall processing time by 35%.</li>
             </ul>
         </div>
 
-        <!-- Education -->
         <div class="section">
             <div class="section-title">EDUCATION</div>
             <div class="item-header">
-                <div>Degree Name (e.g., Bachelor of Computer Applications)</div>
+                <div>Bachelor of Computer Applications (BCA Science)</div>
                 <div>YYYY – YYYY</div>
             </div>
             <div class="item-subtitle">University or College Name | CGPA / Percentage</div>
         </div>
 
-        <!-- Certifications -->
         <div class="section">
             <div class="section-title">CERTIFICATIONS AND HONORS</div>
             <ul class="bullets">
-                <li>Certification Name – Issuing Authority (Year)</li>
-                <li>Honor / Award Name – Institution (Year)</li>
+                <li>Cloud / Technical Certification – Issuing Authority (Year)</li>
+                <li>Academic Award / Rank – Institution (Year)</li>
             </ul>
         </div>
 
@@ -323,7 +315,7 @@
             }
         }
 
-        // Parse PDF while maintaining Structural Layout
+        // Parse PDF into Structured HTML Layout
         function parseStructuredPDF(file) {
             const reader = new FileReader();
             reader.onload = function() {
@@ -386,7 +378,7 @@
             btn.style.backgroundColor = '#38a169';
         }
 
-        // 100% ATS Score Analyzer Rule Engine
+        // Smart & Comprehensive ATS Score Analyzer
         function analyzeATSScore() {
             const content = document.getElementById('resume-content').innerText;
             const htmlContent = document.getElementById('resume-content').innerHTML;
@@ -398,37 +390,54 @@
             let score = 100;
             let suggestions = [];
 
-            // Standard ATS Rules
+            // 1. Structural Section Headings Check
             if (!content.includes("PROFESSIONAL SUMMARY") && !content.includes("SUMMARY")) {
-                score -= 10;
-                suggestions.push("⚠️ 'PROFESSIONAL SUMMARY' हेडिंग जोडल्यास ATS ओळखणे सोपे जाते.");
+                score -= 8;
+                suggestions.push("⚠️ 'PROFESSIONAL SUMMARY' हेडिंग नसल्यामुळे ATS ओळखणे अवघड जाऊ शकते.");
             }
             if (!content.includes("EXPERIENCE")) {
-                score -= 15;
+                score -= 10;
                 suggestions.push("❌ 'EXPERIENCE' हेडर सापडले नाही.");
             }
             if (!content.includes("PROJECTS")) {
-                score -= 10;
+                score -= 8;
                 suggestions.push("⚠️ 'PROJECTS' हेडिंग ॲड करा.");
             }
             if (!content.includes("EDUCATION")) {
-                score -= 15;
+                score -= 10;
                 suggestions.push("❌ 'EDUCATION' सेक्शन जोडणे आवश्यक आहे.");
             }
             if (!content.includes("SKILLS")) {
-                score -= 15;
+                score -= 10;
                 suggestions.push("❌ 'TECHNICAL SKILLS' किंवा 'SKILLS' सेक्शन स्पष्ट ठेवा.");
             }
-            if (htmlContent.includes('<table') && !htmlContent.includes('skills-table')) {
-                score -= 10;
-                suggestions.push("⚠️ ATS कॉम्प्लेक्स Tables नीट स्कॅन करू शकत नाही, सोपे Bullets वापरा.");
+
+            // 2. Check for Bullet Points (Formatting Check)
+            if (!htmlContent.includes('<ul') && !htmlContent.includes('<li') && !content.includes('•')) {
+                score -= 5;
+                suggestions.push("⚠️ अनुभवाचे व प्रोजेक्ट्सचे वर्णन पॅराग्राफ ऐवजी बुलेट पॉईंट्स (•) मध्ये लिहा.");
             }
 
+            // 3. Content Red Flag Check (e.g. Arts Stream in Tech Resume)
+            if (content.toLowerCase().includes("arts stream")) {
+                score -= 4;
+                suggestions.push("💡 Tip: Tech/BCA रोलसाठी 'HSC (Arts Stream)' मधील 'Arts Stream' शब्द काढून फक्त Higher Secondary Certificate (HSC) ठेवा.");
+            }
+
+            // 4. Contact Details & Link Alignment Check
+            if (content.includes("portfolio-website") || content.includes("github.com/")) {
+                if (content.split('\n')[2] && content.split('\n')[2].length > 120) {
+                    score -= 4;
+                    suggestions.push("💡 Tip: Header मधील Contact आणि Social Links अधिक सोप्या आणि शॉर्ट फॉरमॅटमध्ये ठेवा.");
+                }
+            }
+
+            // Final Output Formatting
             if (score === 100) {
-                suggestions.push("🎉 उत्तम! तुमचा रेझ्युमे फॉरमॅट १००% ATS Friendly आहे.");
+                suggestions.push("🎉 उत्तम! तुमचा रेझ्युमे फॉरमॅट आणि कंटेंट १००% ATS-Friendly आहे.");
                 scoreVal.style.color = "#2f855a";
             } else {
-                scoreVal.style.color = score > 75 ? "#dd6b20" : "#e53e3e";
+                scoreVal.style.color = score >= 85 ? "#2b6cb0" : (score >= 70 ? "#dd6b20" : "#e53e3e");
             }
 
             scoreVal.innerText = score + "%";
