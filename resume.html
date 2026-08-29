@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ATS-Friendly Resume Editor & Smart Analyzer</title>
+    <title>Advanced ATS Resume Editor & Comprehensive Analyzer</title>
     <!-- Include PDF.js Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
@@ -78,25 +78,24 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 2px solid #e2e8f0;
             padding-bottom: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .ats-score-badge {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
-            color: #2f855a;
         }
 
         .ats-suggestions {
             font-size: 9.5pt;
-            color: #4a5568;
+            color: #2d3748;
             padding-left: 20px;
         }
 
         .ats-suggestions li {
-            margin-bottom: 5px;
+            margin-bottom: 6px;
         }
 
         /* Editable Highlight Indicator */
@@ -187,18 +186,18 @@
         
         <button class="btn btn-upload" onclick="document.getElementById('fileInput').click()">📁 Upload PDF / Resume</button>
         <button class="btn btn-edit" id="toggleEditBtn" onclick="toggleEditing()">✏️ Toggle Edit Mode</button>
-        <button class="btn btn-ats" onclick="analyzeATSScore()">📊 Check ATS Score</button>
+        <button class="btn btn-ats" onclick="analyzeATSScore()">📊 Real ATS Check</button>
         <button class="btn btn-download" onclick="downloadPDF()">📥 Export PDF</button>
     </div>
 
     <!-- ATS Score Feedback Layer -->
     <div id="ats-feedback-box">
         <div class="ats-score-header">
-            <h3>ATS Optimization & Content Score</h3>
+            <h3>Real ATS Optimization & Content Score</h3>
             <span class="ats-score-badge" id="ats-score-val">--%</span>
         </div>
         <ul class="ats-suggestions" id="ats-suggestions-list">
-            <li>PDF अपलोड करा किंवा 'Check ATS Score' बटणावर क्लिक करा.</li>
+            <li>PDF अपलोड करा किंवा 'Real ATS Check' बटणावर क्लिक करा.</li>
         </ul>
     </div>
 
@@ -255,7 +254,7 @@
                 <div>Technologies Used</div>
             </div>
             <ul class="bullets">
-                <li>Architected a full-stack application serving active users with high reliability.</li>
+                <li>Architected a full-stack application serving 100+ active users with 99.9% uptime.</li>
                 <li>Optimized database queries reducing overall processing time by 35%.</li>
             </ul>
         </div>
@@ -315,7 +314,6 @@
             }
         }
 
-        // Parse PDF into Structured HTML Layout
         function parseStructuredPDF(file) {
             const reader = new FileReader();
             reader.onload = function() {
@@ -378,9 +376,9 @@
             btn.style.backgroundColor = '#38a169';
         }
 
-        // Smart & Comprehensive ATS Score Analyzer
+        // Comprehensive Real ATS Score Engine
         function analyzeATSScore() {
-            const content = document.getElementById('resume-content').innerText;
+            const textContent = document.getElementById('resume-content').innerText;
             const htmlContent = document.getElementById('resume-content').innerHTML;
             const box = document.getElementById('ats-feedback-box');
             const scoreVal = document.getElementById('ats-score-val');
@@ -390,49 +388,66 @@
             let score = 100;
             let suggestions = [];
 
-            // 1. Structural Section Headings Check
-            if (!content.includes("PROFESSIONAL SUMMARY") && !content.includes("SUMMARY")) {
-                score -= 8;
-                suggestions.push("⚠️ 'PROFESSIONAL SUMMARY' हेडिंग नसल्यामुळे ATS ओळखणे अवघड जाऊ शकते.");
-            }
-            if (!content.includes("EXPERIENCE")) {
-                score -= 10;
-                suggestions.push("❌ 'EXPERIENCE' हेडर सापडले नाही.");
-            }
-            if (!content.includes("PROJECTS")) {
-                score -= 8;
-                suggestions.push("⚠️ 'PROJECTS' हेडिंग ॲड करा.");
-            }
-            if (!content.includes("EDUCATION")) {
-                score -= 10;
-                suggestions.push("❌ 'EDUCATION' सेक्शन जोडणे आवश्यक आहे.");
-            }
-            if (!content.includes("SKILLS")) {
-                score -= 10;
-                suggestions.push("❌ 'TECHNICAL SKILLS' किंवा 'SKILLS' सेक्शन स्पष्ट ठेवा.");
-            }
+            // 1. Structural Section Headings (Standard ATS Rule)
+            const requiredSections = [
+                { title: "SUMMARY", penalty: 6, msg: "⚠️ 'PROFESSIONAL SUMMARY' हेडर जोडा." },
+                { title: "EXPERIENCE", penalty: 10, msg: "❌ 'EXPERIENCE' हेडर स्पष्ट दिसत नाही." },
+                { title: "PROJECTS", penalty: 8, msg: "⚠️ 'PROJECTS' हेडर जोडा." },
+                { title: "EDUCATION", penalty: 10, msg: "❌ 'EDUCATION' हेडर missing आहे." },
+                { title: "SKILLS", penalty: 10, msg: "❌ 'TECHNICAL SKILLS' किंवा 'SKILLS' हेडर ॲड करा." }
+            ];
 
-            // 2. Check for Bullet Points (Formatting Check)
-            if (!htmlContent.includes('<ul') && !htmlContent.includes('<li') && !content.includes('•')) {
-                score -= 5;
-                suggestions.push("⚠️ अनुभवाचे व प्रोजेक्ट्सचे वर्णन पॅराग्राफ ऐवजी बुलेट पॉईंट्स (•) मध्ये लिहा.");
-            }
-
-            // 3. Content Red Flag Check (e.g. Arts Stream in Tech Resume)
-            if (content.toLowerCase().includes("arts stream")) {
-                score -= 4;
-                suggestions.push("💡 Tip: Tech/BCA रोलसाठी 'HSC (Arts Stream)' मधील 'Arts Stream' शब्द काढून फक्त Higher Secondary Certificate (HSC) ठेवा.");
-            }
-
-            // 4. Contact Details & Link Alignment Check
-            if (content.includes("portfolio-website") || content.includes("github.com/")) {
-                if (content.split('\n')[2] && content.split('\n')[2].length > 120) {
-                    score -= 4;
-                    suggestions.push("💡 Tip: Header मधील Contact आणि Social Links अधिक सोप्या आणि शॉर्ट फॉरमॅटमध्ये ठेवा.");
+            requiredSections.forEach(sec => {
+                if (!textContent.toUpperCase().includes(sec.title)) {
+                    score -= sec.penalty;
+                    suggestions.push(sec.msg);
                 }
+            });
+
+            // 2. Action Verbs Check
+            const actionVerbs = ["ARCHITECTED", "ENGINEERED", "DEVELOPED", "BUILT", "CREATED", "OPTIMIZED", "IMPLEMENTED", "MODIFIED", "DEPLOYED", "DESIGNED"];
+            let foundVerbs = actionVerbs.filter(verb => textContent.toUpperCase().includes(verb));
+            if (foundVerbs.length < 3) {
+                score -= 5;
+                suggestions.push("💡 Tip: अनुभवाचे किंवा प्रोजेक्टचे वर्णन करताना Strong Action Verbs (उदा. Engineered, Architected, Optimized) वापरा.");
             }
 
-            // Final Output Formatting
+            // 3. Quantifiable Impact/Metrics Check (% or numbers)
+            const metricRegex = /\d+%/g;
+            const numberRegex = /\d+\+/g;
+            if (!metricRegex.test(textContent) && !numberRegex.test(textContent)) {
+                score -= 5;
+                suggestions.push("💡 Tip: कामाचा प्रभाव दर्शवण्यासाठी सेव्हिंग, परफॉर्मन्स किंवा युझर्सचे आकडे जोडा (उदा. 35% time reduced, 100+ active users).");
+            }
+
+            // 4. Tech Keywords Check
+            const coreKeywords = ["REACT", "NODE", "SQL", "GIT", "C++", "C", "JAVA", "DATA STRUCTURES", "API", "FIREBASE"];
+            let matchedKeywords = coreKeywords.filter(kw => textContent.toUpperCase().includes(kw));
+            if (matchedKeywords.length < 4) {
+                score -= 8;
+                suggestions.push("⚠️ Tech Skills कमी आढळले. मुख्य कीवर्ड्स (React, Node, SQL, DSA) समाविष्ट करा.");
+            }
+
+            // 5. Red Flag: Arts Stream in Tech Resume
+            if (textContent.toLowerCase().includes("arts stream")) {
+                score -= 4;
+                suggestions.push("💡 Tip: Tech/BCA रोलसाठी HSC मधील 'Arts Stream' शब्द काढून फक्त 'Higher Secondary Certificate (HSC)' ठेवा.");
+            }
+
+            // 6. Formatting: Bullet Points Check
+            if (!htmlContent.includes('<ul') && !htmlContent.includes('<li') && !textContent.includes('•')) {
+                score -= 5;
+                suggestions.push("⚠️ पॅराग्राफऐवजी माहिती स्पष्ट Bullet Points (•) मध्ये लिहा.");
+            }
+
+            // 7. Content Length Optimization Check
+            const wordCount = textContent.split(/\s+/).length;
+            if (wordCount < 150) {
+                score -= 8;
+                suggestions.push("⚠️ रेझ्युमेमध्ये माहिती खूप कमी वाटत आहे (किमान 200-400 शब्द असावेत).");
+            }
+
+            // Render Output
             if (score === 100) {
                 suggestions.push("🎉 उत्तम! तुमचा रेझ्युमे फॉरमॅट आणि कंटेंट १००% ATS-Friendly आहे.");
                 scoreVal.style.color = "#2f855a";
