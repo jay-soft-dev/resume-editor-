@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Resume - Jay Pawar</title>
+    <title>Resume Editor & Generator</title>
     <style>
         @page {
             size: A4;
@@ -30,6 +30,7 @@
             display: flex;
             justify-content: center;
             gap: 12px;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -42,6 +43,14 @@
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             transition: all 0.2s ease;
+        }
+
+        .btn-upload {
+            background-color: #4a5568;
+        }
+
+        .btn-upload:hover {
+            background-color: #2d3748;
         }
 
         .btn-download {
@@ -66,7 +75,7 @@
             background-color: rgba(235, 248, 255, 0.4);
         }
 
-        /* Hide buttons during printing/saving PDF */
+        /* Hide controls during printing/saving PDF */
         @media print {
             .controls-container {
                 display: none !important;
@@ -212,8 +221,12 @@
 
     <!-- Controls Container -->
     <div class="controls-container">
+        <!-- Hidden File Input -->
+        <input type="file" id="fileInput" accept=".html,.txt,.json" style="display: none;" onchange="uploadResume(event)">
+        
+        <button class="btn btn-upload" onclick="document.getElementById('fileInput').click()">📄 Import Resume / File</button>
         <button class="btn btn-edit" id="toggleEditBtn" onclick="toggleEditing()">✏️ Toggle Edit Mode</button>
-        <button class="btn btn-download" onclick="downloadPDF()">📥 Download / Save to PDF</button>
+        <button class="btn btn-download" onclick="downloadPDF()">📥 Export / Save to PDF</button>
     </div>
 
     <!-- Resume Content Wrapper -->
@@ -404,6 +417,7 @@
     </div>
 
     <script>
+        // Toggle Screen Editing
         function toggleEditing() {
             const content = document.getElementById('resume-content');
             const btn = document.getElementById('toggleEditBtn');
@@ -411,7 +425,7 @@
 
             if (isEditable) {
                 content.setAttribute('contenteditable', 'false');
-                btn.innerText = '✏️ Enable Edit Mode';
+                btn.innerText = '✏️ Toggle Edit Mode';
                 btn.style.backgroundColor = '#dd6b20';
             } else {
                 content.setAttribute('contenteditable', 'true');
@@ -420,12 +434,24 @@
             }
         }
 
+        // Upload custom file content
+        function uploadResume(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('resume-content').innerHTML = e.target.result;
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Save layout as PDF
         function downloadPDF() {
             const content = document.getElementById('resume-content');
-            // Turn off edit mode styling before opening print dialog
             content.setAttribute('contenteditable', 'false');
             const btn = document.getElementById('toggleEditBtn');
-            btn.innerText = '✏️ Enable Edit Mode';
+            btn.innerText = '✏️ Toggle Edit Mode';
             btn.style.backgroundColor = '#dd6b20';
             
             window.print();
