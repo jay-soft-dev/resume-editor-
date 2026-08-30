@@ -11,20 +11,16 @@
     <!-- NAVBAR SECTION -->
     <nav class="navbar">
         <div class="nav-left">
-            <!-- Brand Logo -->
             <div class="brand-logo">
-                <span style="font-size: 22px;">P</span> Perfect Resume
+                <span class="logo-box">P</span> Perfect Resume
             </div>
 
-            <!-- Basic Navigation Links -->
             <span class="nav-item">Templates ˅</span>
             <span class="nav-item">Resume Builder</span>
             
-            <!-- Create Mega Dropdown Menu Wrapper -->
+            <!-- CREATE MEGA MENU WRAPPER -->
             <div class="nav-item-wrapper dropdown-wrapper">
                 Create <span class="arrow-icon">˅</span>
-                
-                <!-- MEGA DROPDOWN MENU CONTAINER -->
                 <div class="mega-menu-container">
                     <div class="menu-column">
                         <h3>Social Media</h3>
@@ -84,27 +80,57 @@
                 </div>
             </div>
 
-            <!-- Edit Feature Dropdown Wrapper -->
+            <!-- EDIT MEGA MENU WRAPPER -->
             <div class="nav-item-wrapper dropdown-wrapper">
                 Edit <span class="arrow-icon">˅</span>
-                
-                <!-- Edit Feature Dropdown Menu -->
-                <div class="dropdown-menu">
-                    <div class="dropdown-item">
-                        <strong>Crop &amp; Resize Photo</strong>
-                        <p>Adjust resume photo dimensions</p>
+                <div class="mega-menu-container edit-mega-menu">
+                    <div class="menu-column">
+                        <div class="menu-brand">
+                            <span class="logo-box mini">P</span> Perfect Editor
+                        </div>
+                        <ul>
+                            <li>AI Assistant (beta)</li>
+                            <li>Adobe Express Photos</li>
+                            <li>Image Editor</li>
+                            <li>Video Editor</li>
+                            <li>Documents</li>
+                            <li>AI Tools</li>
+                            <li>Templates</li>
+                            <li>Blog</li>
+                        </ul>
                     </div>
-                    <div class="dropdown-item">
-                        <strong>Remove Background</strong>
-                        <p>Make photo background transparent</p>
+
+                    <div class="menu-column">
+                        <h3>Image Quick Actions</h3>
+                        <ul>
+                            <li>Remove Background</li>
+                            <li>Resize Image</li>
+                            <li>Convert to JPG</li>
+                            <li>Convert to PNG</li>
+                            <li>Convert to SVG</li>
+                            <li>Crop Image</li>
+                            <li>Change Background</li>
+                        </ul>
                     </div>
-                    <div class="dropdown-item">
-                        <strong>Reorder Sections</strong>
-                        <p>Drag &amp; drop resume layout</p>
-                    </div>
-                    <div class="dropdown-item">
-                        <strong>Change Fonts &amp; Colors</strong>
-                        <p>Customize styles and typography</p>
+
+                    <div class="menu-column">
+                        <h3>Video Quick Actions</h3>
+                        <ul>
+                            <li>Convert Video to GIF</li>
+                            <li>Crop Video</li>
+                            <li>Trim Video</li>
+                            <li>Resize Video</li>
+                            <li>Merge Video</li>
+                            <li>Convert Video to MP4</li>
+                            <li class="active-item">Animate Characters</li>
+                            <li>Caption Video</li>
+                            <li>Remove Video Background</li>
+                            <li>Clip Maker</li>
+                        </ul>
+                        <div class="menu-actions">
+                            <button class="btn-menu-learn">Learn more</button>
+                            <button class="btn-menu-app">Get Perfect Resume Free</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -113,10 +139,9 @@
             <span class="nav-item">Pricing ˅</span>
         </div>
 
-        <!-- Navbar Action Buttons -->
         <div class="nav-right">
             <button class="btn-go-app">Go to App</button>
-            <span style="font-size: 18px; cursor: pointer;">::</span>
+            <span class="grid-icon">::</span>
             <button class="btn-sign-in">Sign in</button>
         </div>
     </nav>
@@ -128,7 +153,6 @@
 
     <!-- MAIN HERO SECTION -->
     <section class="hero-section">
-        <!-- Hero Left Column: Heading and Call-to-Actions -->
         <div class="hero-left">
             <div class="brand-badge">
                 <div class="brand-icon">P</div>
@@ -142,7 +166,6 @@
             <p class="disclaimer">* Available for instant PDF download worldwide</p>
         </div>
 
-        <!-- Hero Right Column: Resume Card Visual Previews -->
         <div class="hero-right">
             <div class="main-card-bg">
                 <div class="resume-header-preview"></div>
@@ -163,69 +186,48 @@
                 <div class="mini-card" style="background:#fed7aa;"></div>
             </div>
 
-            <button class="btn-download-floating">
-                📄 Download PDF
-            </button>
+            <button class="btn-download-floating">📄 Download PDF</button>
         </div>
     </section>
 
-    <!-- CENTER CALL-TO-ACTION BUTTON SECTION -->
     <div class="top-cta-wrapper">
         <button class="btn-center-cta">Create your resume</button>
     </div>
 
-    <!-- TEMPLATES CAROUSEL SECTION -->
+    <!-- CAROUSEL TEMPLATES SECTION -->
     <section class="carousel-section">
         <div class="carousel-wrapper">
             <div class="carousel-track" id="carouselTrack">
                 
-                <!-- Template Card 1 -->
-                <div class="template-card">
-                    <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&auto=format&fit=crop" alt="Template 1">
+                <div class="template-card" data-template="eleanor">
+                    <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&auto=format&fit=crop" alt="Eleanor Maldonado Resume">
                     <button class="btn-edit-hover">Edit this template ↗</button>
                 </div>
 
-                <!-- Template Card 2 -->
-                <div class="template-card">
-                    <img src="https://images.unsplash.com/photo-1586282391129-76a6df230234?w=400&auto=format&fit=crop" alt="Template 2">
+                <div class="template-card" data-template="zahid">
+                    <img src="https://images.unsplash.com/photo-1586282391129-76a6df230234?w=400&auto=format&fit=crop" alt="Zahid Madjer Resume">
                     <button class="btn-edit-hover">Edit this template ↗</button>
                 </div>
 
-                <!-- Template Card 3 -->
-                <div class="template-card">
-                    <img src="https://images.unsplash.com/photo-1626197031507-c170a04d2d42?w=400&auto=format&fit=crop" alt="Template 3">
+                <div class="template-card" data-template="robert">
+                    <img src="https://images.unsplash.com/photo-1626197031507-c170a04d2d42?w=400&auto=format&fit=crop" alt="Robert William Resume">
                     <button class="btn-edit-hover">Edit this template ↗</button>
                 </div>
 
-                <!-- Template Card 4 -->
-                <div class="template-card">
-                    <img src="https://images.unsplash.com/photo-1579389083078-4e7018379f7e?w=400&auto=format&fit=crop" alt="Template 4">
-                    <button class="btn-edit-hover">Edit this template ↗</button>
-                </div>
-
-                <!-- Template Card 5 -->
-                <div class="template-card">
-                    <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&auto=format&fit=crop" alt="Template 5">
-                    <button class="btn-edit-hover">Edit this template ↗</button>
-                </div>
-
-                <!-- Template Card 6 -->
-                <div class="template-card">
-                    <img src="https://images.unsplash.com/photo-1586282391129-76a6df230234?w=400&auto=format&fit=crop" alt="Template 6">
+                <div class="template-card" data-template="john">
+                    <img src="https://images.unsplash.com/photo-1579389083078-4e7018379f7e?w=400&auto=format&fit=crop" alt="John Doe Resume">
                     <button class="btn-edit-hover">Edit this template ↗</button>
                 </div>
 
             </div>
         </div>
 
-        <!-- Carousel Navigation Arrows -->
         <div class="carousel-nav">
             <button class="nav-btn prev-btn" id="prevBtn">‹</button>
             <button class="nav-btn next-btn" id="nextBtn">›</button>
         </div>
     </section>
 
-    <!-- EXTERNAL JAVASCRIPT SCRIPT -->
     <script src="script.js"></script>
 </body>
 </html>

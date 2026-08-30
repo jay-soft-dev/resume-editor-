@@ -1,49 +1,46 @@
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // Select all dropdown elements in the navbar
-    const dropdowns = document.querySelectorAll('.dropdown-wrapper');
+document.addEventListener("DOMContentLoaded", () => {
+    const dropdownWrappers = document.querySelectorAll(".dropdown-wrapper");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const carouselTrack = document.getElementById("carouselTrack");
 
-    dropdowns.forEach(dropdown => {
-        dropdown.addEventListener('click', (e) => {
-            // Close all other open dropdowns first
-            dropdowns.forEach(other => {
-                if (other !== dropdown) {
-                    other.classList.remove('open');
-                }
-            });
-
-            // Toggle current dropdown open/close
-            dropdown.classList.toggle('open');
-            
-            // Prevent click from bubbling up to document
+    // Mega Menu Dropdowns Toggle
+    dropdownWrappers.forEach(wrapper => {
+        wrapper.addEventListener("click", (e) => {
             e.stopPropagation();
+            dropdownWrappers.forEach(w => {
+                if (w !== wrapper) w.classList.remove("open");
+            });
+            wrapper.classList.toggle("open");
         });
     });
 
-    // Close dropdowns when clicking anywhere outside
-    document.addEventListener('click', () => {
-        dropdowns.forEach(dropdown => dropdown.classList.remove('open'));
+    // Close Dropdowns on Clicking Outside
+    document.addEventListener("click", () => {
+        dropdownWrappers.forEach(w => w.classList.remove("open"));
     });
 
-    // Keyboard Navigation: Close on Escape key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            dropdowns.forEach(dropdown => dropdown.classList.remove('open'));
-        }
-    });
-
-    // Carousel Scroll Logic
-    const carouselTrack = document.getElementById('carouselTrack');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-
+    // Template Scroll Controls
     if (carouselTrack && prevBtn && nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            carouselTrack.scrollBy({ left: 300, behavior: 'smooth' });
+        nextBtn.addEventListener("click", () => {
+            carouselTrack.scrollBy({ left: 300, behavior: "smooth" });
         });
 
-        prevBtn.addEventListener('click', () => {
-            carouselTrack.scrollBy({ left: -300, behavior: 'smooth' });
+        prevBtn.addEventListener("click", () => {
+            carouselTrack.scrollBy({ left: -300, behavior: "smooth" });
         });
     }
+
+    // Dynamic Edit Template Button Redirect
+    const editButtons = document.querySelectorAll(".btn-edit-hover");
+    editButtons.forEach(button => {
+        button.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const card = button.closest(".template-card");
+            const templateId = card.getAttribute("data-template");
+
+            // Redirects to editor.html with template ID
+            window.location.href = `editor.html?template=${templateId}`;
+        });
+    });
 });

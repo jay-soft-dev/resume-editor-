@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Maker - Editor</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- HTML2PDF Library for Instant PDF Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body class="editor-page-body">
+
+    <!-- EDITOR NAVBAR -->
+    <nav class="editor-navbar">
+        <div class="editor-nav-left">
+            <h2>Resume maker <span class="badge">BETA</span></h2>
+            <div class="breadcrumbs-steps">
+                <span>✓ Choose resume</span> ➔ <strong class="active-step">2 Edit and download</strong>
+            </div>
+        </div>
+        <div class="editor-nav-right">
+            <button class="btn-secondary" id="downloadPdfBtn">Download PDF</button>
+            <button class="btn-primary">Sign up to save</button>
+            <button class="btn-blue">Share</button>
+        </div>
+    </nav>
+
+    <!-- MAIN EDITOR CONTAINER -->
+    <div class="editor-container">
+        <!-- Sidebar Tools -->
+        <aside class="sidebar-tools">
+            <div class="tool-item">
+                <span class="tool-icon">T</span>
+                <p>Add text</p>
+            </div>
+            <div class="tool-item">
+                <span class="tool-icon">🖼</span>
+                <p>Add Image</p>
+            </div>
+            <div class="tool-item">
+                <span class="tool-icon">🎨</span>
+                <p>Themes</p>
+            </div>
+        </aside>
+
+        <!-- Canvas Area where user edits content -->
+        <main class="canvas-wrapper">
+            <div class="resume-paper" id="resumeCanvas">
+                <h1 contenteditable="true" class="editable-field" id="resName">Eleanor Maldonado</h1>
+                <p contenteditable="true" class="editable-field subtitle" id="resRole">Audiovisual Producer</p>
+                
+                <div class="contact-info">
+                    <span contenteditable="true" class="editable-field">555-012-0535</span> | 
+                    <span contenteditable="true" class="editable-field">emaldonado@email.com</span>
+                </div>
+
+                <hr class="divider">
+
+                <div class="resume-section">
+                    <h3>Summary</h3>
+                    <p contenteditable="true" class="editable-field">
+                        Driven and passionate creative producer with over six years of experience in audiovisual industry, both in creative and commercial productions.
+                    </p>
+                </div>
+
+                <div class="resume-section">
+                    <h3>Experience</h3>
+                    <div class="exp-block">
+                        <h4 contenteditable="true" class="editable-field">Commercial Film Producer</h4>
+                        <p contenteditable="true" class="editable-field company">Kiley + Tristan Media Prod, Miami, FL | Nov 2019 - Present</p>
+                        <p contenteditable="true" class="editable-field">Delivered continuous content stream on a variety of online platforms.</p>
+                    </div>
+                </div>
+
+                <div class="resume-section">
+                    <h3>Education</h3>
+                    <p contenteditable="true" class="editable-field"><strong>B.A. Film & Digital Media</strong> - University of Wollongong (Jun 2014)</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Read URL Parameters to see which Template was selected
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedTemplate = urlParams.get('template');
+
+        if (selectedTemplate === 'zahid') {
+            document.getElementById('resName').innerText = "Zahid Madjer";
+            document.getElementById('resRole').innerText = "Customer Service Adviser";
+        } else if (selectedTemplate === 'robert') {
+            document.getElementById('resName').innerText = "Robert William";
+            document.getElementById('resRole').innerText = "Financial Analyst";
+        }
+
+        // PDF Download Engine
+        document.getElementById('downloadPdfBtn').addEventListener('click', () => {
+            const element = document.getElementById('resumeCanvas');
+            const opt = {
+                margin:       0.5,
+                filename:     'My_Resume.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        });
+    </script>
+</body>
+</html>
