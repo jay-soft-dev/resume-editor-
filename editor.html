@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resume Maker - Editor</title>
     <link rel="stylesheet" href="style.css">
-    <!-- HTML2PDF Library for Instant PDF Download -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body class="editor-page-body">
@@ -27,21 +26,163 @@
 
     <!-- MAIN EDITOR CONTAINER -->
     <div class="editor-container">
-        <!-- Sidebar Tools -->
+        
+        <!-- Sidebar Navigation Tools -->
         <aside class="sidebar-tools">
-            <div class="tool-item">
+            <div class="tool-item active" id="toolText">
                 <span class="tool-icon">T</span>
                 <p>Add text</p>
             </div>
-            <div class="tool-item">
+            <div class="tool-item" id="toolImage">
                 <span class="tool-icon">🖼</span>
                 <p>Add Image</p>
             </div>
-            <div class="tool-item">
+            <div class="tool-item" id="toolThemes">
                 <span class="tool-icon">🎨</span>
                 <p>Themes</p>
             </div>
+            
+            <button class="btn-back-arrow">‹</button>
         </aside>
+
+        <!-- DYNAMIC EDITING SIDE PANELS -->
+        <div class="side-panel-wrapper">
+            
+            <!-- PANEL 1: EDIT TEXT (Screenshot 1) -->
+            <div class="side-panel active" id="panelText">
+                <div class="panel-header">
+                    <h3>Edit text</h3>
+                    <span class="close-panel">&times;</span>
+                </div>
+                <div class="panel-content">
+                    <div class="form-group">
+                        <select class="input-select">
+                            <option>Source Sans 3</option>
+                            <option>Arial</option>
+                            <option>Roboto</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <select class="input-select flex-1">
+                            <option>Regular</option>
+                            <option>Bold</option>
+                        </select>
+                        <span class="text-icon-btn">T<sub>T</sub></span>
+                        <input type="number" value="78" class="input-number">
+                    </div>
+
+                    <div class="style-toolbar">
+                        <button class="style-btn font-bold">B</button>
+                        <button class="style-btn font-italic">I</button>
+                        <button class="style-btn font-underline">U</button>
+                        <span class="v-divider"></span>
+                        <button class="style-btn active">≡</button>
+                        <button class="style-btn">≡</button>
+                        <button class="style-btn">≡</button>
+                        <button class="style-btn">≡</button>
+                    </div>
+
+                    <h4 class="section-subtitle">Text layout</h4>
+                    <div class="layout-grid">
+                        <div class="layout-card active">
+                            <div class="layout-preview">Abcd</div>
+                            <span>Default</span>
+                        </div>
+                        <div class="layout-card">
+                            <div class="layout-preview bold-text">ABC<br>DEF</div>
+                            <span>Dynamic</span>
+                        </div>
+                        <div class="layout-card">
+                            <div class="layout-preview circle-text">⭕</div>
+                            <span>Circle</span>
+                        </div>
+                        <div class="layout-card">
+                            <div class="layout-preview">∩</div>
+                            <span>Arch</span>
+                        </div>
+                        <div class="layout-card">
+                            <div class="layout-preview">∪</div>
+                            <span>Bow</span>
+                        </div>
+                    </div>
+
+                    <div class="panel-footer-info">
+                        <p>✔ Free to use</p>
+                        <p>✔ No credit card required</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 2: COLOR THEME (Screenshot 2) -->
+            <div class="side-panel" id="panelThemes">
+                <div class="panel-header">
+                    <h3>Color theme</h3>
+                    <span class="close-panel">&times;</span>
+                </div>
+                <div class="panel-content">
+                    <div class="theme-header-row">
+                        <h4>Page Theme</h4>
+                        <span class="shuffle-btn">🔀</span>
+                    </div>
+
+                    <div class="color-palette-bar">
+                        <span style="background: #000000;"></span>
+                        <span style="background: #7dd3fc;"></span>
+                        <span style="background: #fbcfe8;"></span>
+                        <span style="background: #ffffff;"></span>
+                        <span style="background: #fde047;"></span>
+                    </div>
+
+                    <hr class="divider-light">
+
+                    <div class="search-box">
+                        🔍 <input type="text" placeholder="Search">
+                    </div>
+
+                    <div class="theme-category">
+                        <div class="category-header">
+                            <span>Bold</span>
+                            <a href="#">View all</a>
+                        </div>
+                        <div class="color-palette-bar theme-option" data-color="#ec4899">
+                            <span style="background: #ec4899;"></span>
+                            <span style="background: #d946ef;"></span>
+                            <span style="background: #1e3a8a;"></span>
+                            <span style="background: #000000;"></span>
+                            <span style="background: #f3f4f6;"></span>
+                        </div>
+                        <div class="color-palette-bar theme-option" data-color="#9f1239">
+                            <span style="background: #9f1239;"></span>
+                            <span style="background: #fef08a;"></span>
+                            <span style="background: #f43f5e;"></span>
+                            <span style="background: #0284c7;"></span>
+                            <span style="background: #0891b2;"></span>
+                        </div>
+                    </div>
+
+                    <div class="theme-category">
+                        <div class="category-header">
+                            <span>Classic</span>
+                            <a href="#">View all</a>
+                        </div>
+                        <div class="color-palette-bar theme-option" data-color="#475569">
+                            <span style="background: #475569;"></span>
+                            <span style="background: #cbd5e1;"></span>
+                            <span style="background: #94a3b8;"></span>
+                            <span style="background: #d97706;"></span>
+                            <span style="background: #b45309;"></span>
+                        </div>
+                    </div>
+
+                    <div class="panel-footer-info">
+                        <p>✔ Free to use</p>
+                        <p>✔ No credit card required</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
 
         <!-- Canvas Area where user edits content -->
         <main class="canvas-wrapper">
@@ -80,31 +221,6 @@
         </main>
     </div>
 
-    <script>
-        // Read URL Parameters to see which Template was selected
-        const urlParams = new URLSearchParams(window.location.search);
-        const selectedTemplate = urlParams.get('template');
-
-        if (selectedTemplate === 'zahid') {
-            document.getElementById('resName').innerText = "Zahid Madjer";
-            document.getElementById('resRole').innerText = "Customer Service Adviser";
-        } else if (selectedTemplate === 'robert') {
-            document.getElementById('resName').innerText = "Robert William";
-            document.getElementById('resRole').innerText = "Financial Analyst";
-        }
-
-        // PDF Download Engine
-        document.getElementById('downloadPdfBtn').addEventListener('click', () => {
-            const element = document.getElementById('resumeCanvas');
-            const opt = {
-                margin:       0.5,
-                filename:     'My_Resume.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-            html2pdf().set(opt).from(element).save();
-        });
-    </script>
+    <script src="editor-script.js"></script>
 </body>
 </html>
