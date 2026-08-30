@@ -8,7 +8,6 @@
 </head>
 <body>
 
-    <!-- NAVBAR SECTION -->
     <nav class="navbar">
         <div class="nav-left">
             <div class="brand-logo">
@@ -18,7 +17,6 @@
             <span class="nav-item">Templates ˅</span>
             <span class="nav-item">Resume Builder</span>
             
-            <!-- CREATE MEGA MENU WRAPPER -->
             <div class="nav-item-wrapper dropdown-wrapper">
                 Create <span class="arrow-icon">˅</span>
                 <div class="mega-menu-container">
@@ -80,7 +78,6 @@
                 </div>
             </div>
 
-            <!-- EDIT MEGA MENU WRAPPER -->
             <div class="nav-item-wrapper dropdown-wrapper">
                 Edit <span class="arrow-icon">˅</span>
                 <div class="mega-menu-container edit-mega-menu">
@@ -89,7 +86,7 @@
                             <span class="logo-box mini">P</span> Perfect Editor
                         </div>
                         <ul>
-                            <li>AI Assistant (beta)</li>
+                            <li class="ai-assistant-btn">AI Assistant (beta)</li>
                             <li>Adobe Express Photos</li>
                             <li>Image Editor</li>
                             <li>Video Editor</li>
@@ -142,16 +139,14 @@
         <div class="nav-right">
             <button class="btn-go-app">Go to App</button>
             <span class="grid-icon">::</span>
-            <button class="btn-sign-in">Sign in</button>
+            <button class="btn-sign-in" id="openAuthBtn">Sign in</button>
         </div>
     </nav>
 
-    <!-- BREADCRUMB SECTION -->
     <div class="breadcrumb">
         Home <span>/</span> Create <span>/</span> <strong>Resume</strong>
     </div>
 
-    <!-- MAIN HERO SECTION -->
     <section class="hero-section">
         <div class="hero-left">
             <div class="brand-badge">
@@ -194,7 +189,6 @@
         <button class="btn-center-cta">Create your resume</button>
     </div>
 
-    <!-- CAROUSEL TEMPLATES SECTION -->
     <section class="carousel-section">
         <div class="carousel-wrapper">
             <div class="carousel-track" id="carouselTrack">
@@ -227,6 +221,137 @@
             <button class="nav-btn next-btn" id="nextBtn">›</button>
         </div>
     </section>
+
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-card">
+            <span class="modal-close" id="closeAuthModal">&times;</span>
+            
+            <div class="modal-left">
+                <div class="modal-preview-badge">
+                    <span class="preview-icon">✨</span>
+                    <p>Build Your Resume Free</p>
+                </div>
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" alt="Illustration" class="modal-img">
+            </div>
+
+            <div class="modal-right">
+                <div class="brand-logo-container">
+                    <span class="express-icon">P</span>
+                    <span class="brand-title">Perfect Resume</span>
+                </div>
+
+                <div class="auth-tabs">
+                    <button class="auth-tab-btn active" id="tabSignInBtn">Sign In</button>
+                    <button class="auth-tab-btn" id="tabSignUpBtn">Create Account</button>
+                </div>
+
+                <div class="auth-view active" id="signInView">
+                    <div class="auth-buttons">
+                        <button class="auth-btn google-btn">
+                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" width="18" alt="Google">
+                            Continue with Google
+                        </button>
+                        <button class="auth-btn facebook-btn">
+                            <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" width="18" alt="Facebook">
+                            Continue with Facebook
+                        </button>
+                    </div>
+
+                    <div class="divider"><span>OR</span></div>
+
+                    <form class="auth-form" id="signInForm">
+                        <div class="form-group">
+                            <input type="email" placeholder="Email Address" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="btn-submit">Sign In</button>
+                    </form>
+                </div>
+
+                <div class="auth-view" id="signUpView">
+                    <div class="signup-toggle">
+                        <label><input type="radio" name="signupType" value="email" checked id="radioEmail"> Email</label>
+                        <label><input type="radio" name="signupType" value="phone" id="radioPhone"> Phone (OTP)</label>
+                    </div>
+
+                    <form class="auth-form" id="emailSignUpForm">
+                        <div class="form-group">
+                            <input type="text" placeholder="Full Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Email Address" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="Create Password" required>
+                        </div>
+                        <button type="submit" class="btn-submit">Create Account</button>
+                    </form>
+
+                    <form class="auth-form hidden" id="phoneSignUpForm">
+                        <div class="form-group">
+                            <input type="tel" placeholder="Mobile Number (+91...)" required>
+                        </div>
+                        <div class="form-group otp-group">
+                            <input type="text" placeholder="Enter OTP" maxlength="6">
+                            <button type="button" class="btn-send-otp" id="sendOtpBtn">Get OTP</button>
+                        </div>
+                        <button type="submit" class="btn-submit">Verify & Sign Up</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            GoogleAuthProvider, 
+            signInWithPopup,
+            onAuthStateChanged,
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        window.firebaseAuth = {
+            auth,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            GoogleAuthProvider,
+            signInWithPopup,
+            signOut
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            const openAuthBtn = document.getElementById("openAuthBtn");
+            if (user) {
+                if (openAuthBtn) {
+                    openAuthBtn.textContent = "Sign Out (" + (user.displayName || user.email.split('@')[0]) + ")";
+                    openAuthBtn.onclick = () => signOut(auth);
+                }
+            } else {
+                if (openAuthBtn) {
+                    openAuthBtn.textContent = "Sign in";
+                    openAuthBtn.onclick = null;
+                }
+            }
+        });
+    </script>
 
     <script src="script.js"></script>
 </body>

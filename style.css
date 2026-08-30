@@ -827,3 +827,197 @@ body {
     background: white;
     cursor: pointer;
 }
+/* Modal Base Adjustments */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-card {
+    background: #fff;
+    width: 800px;
+    max-width: 90%;
+    border-radius: 16px;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.modal-left {
+    width: 45%;
+    background: #f3f4f6;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.modal-img {
+    width: 100%;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.modal-right {
+    width: 55%;
+    padding: 30px;
+}
+
+/* Auth Tabs */
+.auth-tabs {
+    display: flex;
+    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 20px;
+}
+
+.auth-tab-btn {
+    flex: 1;
+    padding: 10px;
+    background: none;
+    border: none;
+    font-weight: 600;
+    font-size: 15px;
+    color: #6b7280;
+    cursor: pointer;
+}
+
+.auth-tab-btn.active {
+    color: #4f46e5;
+    border-bottom: 2px solid #4f46e5;
+}
+
+/* Views & Forms */
+.auth-view {
+    display: none;
+}
+
+.auth-view.active {
+    display: block;
+}
+
+.signup-toggle {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-color: #4f46e5;
+}
+
+.otp-group {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-send-otp {
+    padding: 10px 14px;
+    background: #e0e7ff;
+    color: #4338ca;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    background: #4f46e5;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background: #4338ca;
+}
+
+.divider {
+    text-align: center;
+    margin: 15px 0;
+    position: relative;
+}
+
+.divider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #e5e7eb;
+}
+
+.divider span {
+    background: #fff;
+    padding: 0 10px;
+    position: relative;
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+.auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.auth-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.hidden {
+    display: none !important;
+}
