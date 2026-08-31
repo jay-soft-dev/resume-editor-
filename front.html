@@ -304,8 +304,6 @@
         </div>
     </div>
 
-   <!-- FIREBASE AUTHENTICATION & FIRESTORE SCRIPT -->
-   <!-- FIREBASE AUTHENTICATION & FIRESTORE SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
@@ -317,16 +315,16 @@
             onAuthStateChanged,
             signOut 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
-           apiKey: "AIzaSyA1zdMeCbPgDIeLsawTxL0dMQ-Gfxp3q4g",
-  authDomain: "perfect-resume-674b9.firebaseapp.com",
-  projectId: "perfect-resume-674b9",
-  storageBucket: "perfect-resume-674b9.firebasestorage.app",
-  messagingSenderId: "558664783632",
-  appId: "1:558664783632:web:d5be3543e4e77784dd3795",
-  measurementId: "G-LK4SV76D0F"
+            apiKey: "AIzaSyA1zdMeCbPgDIeLsawTxL0dMQ-Gfxp3q4g",
+            authDomain: "perfect-resume-674b9.firebaseapp.com",
+            projectId: "perfect-resume-674b9",
+            storageBucket: "perfect-resume-674b9.firebasestorage.app",
+            messagingSenderId: "558664783632",
+            appId: "1:558664783632:web:d5be3543e4e77784dd3795",
+            measurementId: "G-LK4SV76D0F"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -338,22 +336,13 @@
             if (authModal) authModal.classList.remove("active");
         }
 
-        // ==========================================
-        // Check user login state and update Navbar accordingly:
-        // ==========================================
         onAuthStateChanged(auth, (user) => {
             const openAuthBtn = document.getElementById("openAuthBtn");
-            const gotoAppBtn = document.getElementById("GoToAppBtn"); 
-
             if (user) {
                 if (openAuthBtn) {
                     openAuthBtn.textContent = "Sign Out (" + (user.displayName || user.email.split('@')[0]) + ")";
                     openAuthBtn.onclick = () => signOut(auth);
                 }
-                
-                // If you want to automatically redirect the user to editor.html upon login,
-                // remove the double slashes (//) from the line below (Optional):
-                // window.location.href = "editor.html"; 
             } else {
                 if (openAuthBtn) {
                     openAuthBtn.textContent = "Sign in";
@@ -362,7 +351,6 @@
             }
         });
 
-        // A. EMAIL SIGN UP (Create new account)
         const emailSignUpForm = document.getElementById("emailSignUpForm");
         if (emailSignUpForm) {
             emailSignUpForm.addEventListener("submit", async (e) => {
@@ -380,7 +368,6 @@
             });
         }
 
-        // B. EMAIL SIGN IN (User login)
         const signInForm = document.getElementById("signInForm");
         if (signInForm) {
             signInForm.addEventListener("submit", async (e) => {
@@ -398,7 +385,6 @@
             });
         }
 
-        // C. GOOGLE SIGN IN
         const googleBtn = document.querySelector(".google-btn");
         if (googleBtn) {
             googleBtn.addEventListener("click", async () => {
@@ -414,7 +400,6 @@
         }
     </script>
 
-    <!-- Main script.js file -->
     <script src="script.js"></script>
 </body>
 </html>

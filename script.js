@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 3. EDIT TEMPLATE BUTTON REDIRECT
+    // 3. EDIT TEMPLATE & CREATE MENU OPTIONS REDIRECT
     const editButtons = document.querySelectorAll(".btn-edit-hover");
     editButtons.forEach(button => {
         button.addEventListener("click", (e) => {
@@ -43,6 +43,24 @@ document.addEventListener("DOMContentLoaded", () => {
             if (card) {
                 const templateId = card.getAttribute("data-template");
                 window.location.href = `editor.html?template=${templateId}`;
+            }
+        });
+    });
+
+    // Create Mega Menu List Items Redirect Logic (Updated for Logo Page)
+    const createMenuOptions = document.querySelectorAll(".mega-menu-container .menu-column ul li"); 
+    createMenuOptions.forEach(item => {
+        item.addEventListener("click", (e) => {
+            e.preventDefault();
+            const optionText = item.textContent.trim();
+            
+            // Redirect to logo.html if user clicks on "Logo" or "Generate Logo"
+            if (optionText === "Logo" || optionText === "Generate Logo") {
+                window.location.href = "logo.html";
+            } else {
+                // Redirect other options to editor.html with type parameter
+                const optionSlug = optionText.toLowerCase().replace(/\s+/g, '-');
+                window.location.href = `editor.html?type=${optionSlug}`;
             }
         });
     });
