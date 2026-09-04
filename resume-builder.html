@@ -3,87 +3,796 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Resume - Perfect Resume</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Smart ATS Resume Builder & Interactive Editor</title>
+    <!-- Include PDF.js Library for Client-Side PDF Parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <style>
-        .builder-container {
-            max-width: 700px;
-            margin: 60px auto;
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            text-align: center;
+        @page {
+            size: A4;
+            margin: 10mm 12mm;
+            background-color: #ffffff;
         }
-        .builder-container h1 {
-            font-size: 28px;
-            color: #1e1e1e;
-            margin-bottom: 10px;
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
-        .builder-container p {
-            color: #666;
-            margin-bottom: 30px;
+
+        body {
+            background-color: #f8fafc;
+            color: #1a202c;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
-        .upload-box {
-            border: 2px dashed #6366f1;
-            padding: 40px;
-            border-radius: 8px;
-            background: #f8fafc;
+
+        /* Top Navigation Bar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            color: #e53e3e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             cursor: pointer;
-            transition: 0.3s;
         }
-        .upload-box:hover {
-            background: #f1f5f9;
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
         }
-        .upload-box input[type="file"] {
+
+        .nav-links li:hover {
+            color: #2b6cb0;
+            cursor: pointer;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Buttons Style */
+        .btn {
+            color: #ffffff;
+            border: none;
+            padding: 9px 18px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-main { background-color: #5a67d8; }
+        .btn-main:hover { background-color: #4c51bf; }
+
+        .btn-upload { background-color: #2b6cb0; }
+        .btn-upload:hover { background-color: #2c5282; }
+
+        .btn-download { background-color: #2f855a; }
+        .btn-download:hover { background-color: #276749; }
+
+        .btn-edit { background-color: #dd6b20; }
+        .btn-edit:hover { background-color: #c05621; }
+
+        .btn-ats { background-color: #805ad5; }
+        .btn-ats:hover { background-color: #6b46c1; }
+
+        .btn-home { background-color: #718096; }
+        .btn-home:hover { background-color: #4a5568; }
+
+        .btn-fix {
+            background-color: #e53e3e;
+            padding: 4px 10px;
+            font-size: 11px;
+            border-radius: 4px;
+        }
+        .btn-fix:hover { background-color: #c53030; }
+
+        /* HERO LANDING SECTION */
+        #landing-view {
+            padding-bottom: 40px;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 45px 20px 25px;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 38px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #1a202c;
+        }
+
+        .hero-subtitle {
+            font-size: 15px;
+            color: #718096;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* Template Gallery Cards Carousel */
+        .templates-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 10px 40px 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .templates-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        .templates-container::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 10px;
+        }
+
+        .template-card {
+            min-width: 210px;
+            height: 270px;
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+            cursor: pointer;
+        }
+
+        .template-card:hover, .template-card.active {
+            transform: translateY(-4px);
+            border-color: #805ad5;
+            box-shadow: 0 10px 20px rgba(128, 90, 213, 0.15);
+        }
+
+        .template-preview {
+            background: #edf2f7;
+            height: 75%;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a5568;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .badge-100 {
+            background: #38a169;
+            color: #fff;
+            font-size: 7.5pt;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        /* Upload Area */
+        .upload-section {
+            max-width: 850px;
+            margin: 20px auto;
+            border: 2px dashed #cbd5e0;
+            border-radius: 16px;
+            background-color: #ffffff;
+            padding: 25px 35px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .upload-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            background-color: #ebf8ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .upload-text h3 {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .upload-text p {
+            font-size: 13px;
+            color: #718096;
+        }
+
+        /* EDITOR WORKSPACE SECTION */
+        #editor-workspace {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+        }
+
+        .editor-toolbar {
+            background: #ffffff;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 61px;
+            z-index: 900;
+        }
+
+        .main-workspace {
+            display: flex;
+            flex: 1;
+            max-width: 1250px;
+            margin: 20px auto;
+            width: 100%;
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: fit-content;
+            border: 1px solid #e2e8f0;
+        }
+
+        .content-area {
+            flex: 1;
+        }
+
+        /* ATS Feedback Box */
+        #ats-feedback-box {
+            background: #ffffff;
+            border: 2px solid #805ad5;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 20px;
             display: none;
         }
-        .upload-label {
-            font-size: 16px;
-            color: #4f46e5;
-            font-weight: 600;
+
+        .ats-score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .ats-score-badge {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .ats-suggestions {
+            font-size: 9.5pt;
+            color: #2d3748;
+            padding-left: 18px;
+        }
+
+        .ats-suggestions li {
+            margin-bottom: 6px;
+        }
+
+        /* Red Underline Interactive Error */
+        .ats-error-clickable {
+            border-bottom: 2px dashed #e53e3e !important;
+            background-color: #fff5f5 !important;
+            color: #c53030 !important;
+            padding: 0 4px;
+            border-radius: 3px;
             cursor: pointer;
+            font-weight: bold;
         }
-        .btn-back {
-            display: inline-block;
-            margin-top: 20px;
-            color: #666;
-            text-decoration: none;
-            font-size: 14px;
+
+        /* Resume Preview Container */
+        #resume-content {
+            background: #ffffff;
+            padding: 35px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            min-height: 800px;
         }
-        .btn-back:hover {
-            text-decoration: underline;
+
+        [contenteditable="true"] {
+            outline: 1px dashed #3182ce;
+            background-color: rgba(235, 248, 255, 0.3);
+            padding: 4px;
+        }
+
+        /* Modal Styles */
+        .fix-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 420px;
+            background: #ffffff;
+            border: 2px solid #805ad5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 18px;
+            z-index: 2000;
+        }
+
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 1999;
+        }
+
+        /* TEMPLATE STYLES */
+        .tpl-standard .header { text-align: center; border-bottom: 2px solid #2b6cb0; padding-bottom: 8px; margin-bottom: 14px; }
+        .tpl-standard .header h1 { font-size: 20pt; color: #1a365d; text-transform: uppercase; }
+        .tpl-standard .subtitle { font-size: 10pt; font-weight: bold; color: #2b6cb0; margin-bottom: 4px; }
+        .tpl-standard .contact-info { font-size: 8.5pt; color: #4a5568; }
+        .tpl-standard .section-title { font-size: 11pt; font-weight: bold; color: #1a365d; text-transform: uppercase; border-bottom: 1px solid #cbd5e0; padding-bottom: 2px; margin-bottom: 8px; margin-top: 12px; }
+
+        .tpl-modern .header { text-align: left; border-bottom: 2px solid #2d3748; padding-bottom: 10px; margin-bottom: 14px; }
+        .tpl-modern .header h1 { font-size: 22pt; color: #2d3748; text-transform: uppercase; }
+        .tpl-modern .subtitle { font-size: 10.5pt; font-weight: bold; color: #4a5568; margin-bottom: 4px; }
+        .tpl-modern .contact-info { font-size: 8.5pt; color: #718096; }
+        .tpl-modern .section-title { font-size: 11pt; font-weight: bold; color: #2d3748; text-transform: uppercase; background: #edf2f7; padding: 4px 8px; margin-bottom: 8px; margin-top: 12px; }
+
+        .tpl-classic .header { text-align: center; border-bottom: 1px dashed #4a5568; padding-bottom: 10px; margin-bottom: 14px; }
+        .tpl-classic .header h1 { font-size: 19pt; color: #000; letter-spacing: 1px; }
+        .tpl-classic .subtitle { font-size: 10pt; font-style: italic; color: #2d3748; margin-bottom: 4px; }
+        .tpl-classic .contact-info { font-size: 8.5pt; color: #2d3748; }
+        .tpl-classic .section-title { font-size: 11pt; font-weight: bold; color: #000; text-transform: uppercase; text-align: center; border-bottom: 1px solid #000; padding-bottom: 2px; margin-bottom: 8px; margin-top: 12px; }
+
+        .section { margin-bottom: 10px; }
+        .item-header { display: flex; justify-content: space-between; font-weight: bold; color: #2d3748; }
+        .item-subtitle { font-style: italic; color: #4a5568; margin-bottom: 3px; font-size: 9pt; }
+        ul.bullets { padding-left: 18px; margin-top: 2px; }
+        ul.bullets li { margin-bottom: 3px; color: #2d3748; }
+
+        @media print {
+            .navbar, .editor-toolbar, .sidebar, #ats-feedback-box, .fix-modal, .modal-backdrop { display: none !important; }
+            body { background: white; }
+            #editor-workspace { display: block !important; }
+            .main-workspace { padding: 0; display: block; }
+            #resume-content { box-shadow: none; padding: 0; }
+            [contenteditable="true"] { outline: none !important; background: transparent !important; }
+            .ats-error-clickable { border: none !important; background: transparent !important; color: inherit !important; }
         }
     </style>
 </head>
 <body>
 
-    <div class="builder-container">
-        <h1>Build Your Resume</h1>
-        <p>Upload your existing resume in PDF format to get started instantly.</p>
-        
-        <div class="upload-box" onclick="document.getElementById('resumeFile').click();">
-            <input type="file" id="resumeFile" accept=".pdf">
-            <div class="upload-label">📁 Click here to upload your PDF resume</div>
-            <p style="font-size: 13px; color: #888; margin-top: 8px;" id="fileNameDisplay">Supports PDF format up to 10MB</p>
+    <!-- Header Navigation -->
+    <nav class="navbar">
+        <div class="logo" onclick="showLandingView()">
+            <span>📄</span> ResumeBuilder
+        </div>
+        <ul class="nav-links">
+            <li onclick="showLandingView()">Templates</li>
+            <li onclick="switchToEditor()">ATS Checker</li>
+            <li onclick="switchToEditor()">Edit Resume</li>
+        </ul>
+        <div class="auth-buttons">
+            <button class="btn btn-main" onclick="switchToEditor()">Create Resume</button>
+        </div>
+    </nav>
+
+    <!-- Global Hidden File Input -->
+    <input type="file" id="globalFileInput" accept=".pdf,.html,.txt" style="display: none;" onchange="handleFileUpload(event)">
+
+    <!-- LANDING VIEW SECTION -->
+    <div id="landing-view">
+        <section class="hero-section">
+            <h1 class="hero-title">Free Online Resume Maker</h1>
+            <p class="hero-subtitle">
+                Build a standout resume in minutes. Start from one of our professionally designed & ATS-optimized templates or upload your existing resume to get a polished new version, fast.
+            </p>
+            <button class="btn btn-main" style="padding: 12px 28px; font-size: 15px;" onclick="switchToEditor()">Create Your Resume</button>
+        </section>
+
+        <!-- Template Selector Gallery -->
+        <div class="templates-container">
+            <div class="template-card active" onclick="selectTemplateAndOpen('tpl-standard')">
+                <div class="template-preview">1. Standard Professional</div>
+                <span class="badge-100">100% ATS Ready</span>
+            </div>
+            <div class="template-card" onclick="selectTemplateAndOpen('tpl-modern')">
+                <div class="template-preview">2. Modern Minimalist</div>
+                <span class="badge-100">100% ATS Ready</span>
+            </div>
+            <div class="template-card" onclick="selectTemplateAndOpen('tpl-classic')">
+                <div class="template-preview">3. Classic Executive</div>
+                <span class="badge-100">100% ATS Ready</span>
+            </div>
         </div>
 
-        <br>
-        <a href="index.html" class="btn-back">← Back to Home</a>
+        <!-- Drag & Drop / File Upload Card -->
+        <div class="upload-section">
+            <div class="upload-info">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">
+                    <h3>Already have a resume?</h3>
+                    <p>Click to upload PDF, HTML, or TXT file to parse and edit directly.</p>
+                </div>
+            </div>
+            <button class="btn btn-upload" onclick="document.getElementById('globalFileInput').click()">Upload Your Resume</button>
+        </div>
+    </div>
+
+    <!-- RESUME EDITOR WORKSPACE SECTION -->
+    <div id="editor-workspace">
+        <div class="editor-toolbar">
+            <!-- Added Return to Home Button -->
+            <button class="btn btn-home" onclick="showLandingView()">🏠 Return to Home</button>
+            <button class="btn btn-upload" onclick="document.getElementById('globalFileInput').click()">📁 Upload Resume</button>
+            <button class="btn btn-edit" id="toggleEditBtn" onclick="toggleEditing()">✏️ Edit Mode</button>
+            <button class="btn btn-ats" onclick="analyzeATSScore()">📊 Real ATS Check & Highlight</button>
+            <button class="btn btn-download" onclick="downloadPDF()">📥 Export PDF</button>
+        </div>
+
+        <div class="main-workspace">
+            <!-- Sidebar Template Changer -->
+            <div class="sidebar">
+                <h4 style="font-size: 11pt; color: #2d3748; border-bottom: 2px solid #805ad5; padding-bottom: 5px;">⚡ ATS Templates</h4>
+                <div class="template-card active" id="side-tpl-standard" onclick="applyTemplate('tpl-standard', this)">
+                    <p><strong>1. Standard Pro</strong></p>
+                    <span class="badge-100">100% ATS</span>
+                </div>
+                <div class="template-card" id="side-tpl-modern" onclick="applyTemplate('tpl-modern', this)">
+                    <p><strong>2. Modern Minimal</strong></p>
+                    <span class="badge-100">100% ATS</span>
+                </div>
+                <div class="template-card" id="side-tpl-classic" onclick="applyTemplate('tpl-classic', this)">
+                    <p><strong>3. Classic Exec</strong></p>
+                    <span class="badge-100">100% ATS</span>
+                </div>
+            </div>
+
+            <!-- Content Workspace -->
+            <div class="content-area">
+                <!-- ATS Feedback Container -->
+                <div id="ats-feedback-box">
+                    <div class="ats-score-header">
+                        <h3>ATS Real-Time Feedback</h3>
+                        <span class="ats-score-badge" id="ats-score-val">--%</span>
+                    </div>
+                    <ul class="ats-suggestions" id="ats-suggestions-list">
+                        <li>Click 'Real ATS Check' to evaluate your resume.</li>
+                    </ul>
+                </div>
+
+                <!-- Editable Resume Structure -->
+                <div id="resume-content" class="tpl-standard" contenteditable="false">
+                    <div class="header">
+                        <h1>YOUR FULL NAME</h1>
+                        <div class="subtitle">Software Engineering Intern</div>
+                        <div class="contact-info">
+                            City, State, Zip | Phone: +91 00000 00000 | Email: your.email@example.com
+                            <br>
+                            GitHub: github.com/username | LinkedIn: linkedin.com/in/username
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">PROFESSIONAL SUMMARY</div>
+                        <div>
+                            BCA (Science) student with strong foundations in Data Structures, Problem Solving, C/C++, and Web Development (React.js, Node.js). Seeking a Software Engineering Internship.
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">TECHNICAL SKILLS</div>
+                        <ul class="bullets">
+                            <li><strong>Languages & Core:</strong> C, C++, Data Structures & Algorithms, Java, SQL</li>
+                            <li><strong>Web Tools:</strong> React.js, Node.js, Express.js, Tailwind CSS, REST APIs</li>
+                        </ul>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">EXPERIENCE</div>
+                        <div class="item-header">
+                            <div>Software Development Intern</div>
+                            <div>2024 – Present</div>
+                        </div>
+                        <div class="item-subtitle">Tech Projects | Pune, Maharashtra</div>
+                        <ul class="bullets">
+                            <li>Architected full-stack web application serving 100+ active users.</li>
+                            <li>Optimized database queries improving response speed by 25%.</li>
+                        </ul>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">EDUCATION</div>
+                        <div class="item-header">
+                            <div>Bachelor of Computer Applications (BCA Science)</div>
+                            <div>2025 – 2028</div>
+                        </div>
+                        <div class="item-subtitle">Pune University | CGPA: 8.18 / 10.0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Fix Modal Window -->
+    <div class="modal-backdrop" id="modalBackdrop" onclick="closeFixModal()"></div>
+    <div class="fix-modal" id="fixModal">
+        <h4 style="color: #e53e3e; margin-bottom: 10px;">🚨 ATS Optimization Fix</h4>
+        <div style="background: #f7fafc; padding: 10px; border-radius: 5px; margin-bottom: 12px; font-size: 9pt;">
+            <p><strong>Issue:</strong> <span id="modalIssueText"></span></p>
+            <p><strong>Original:</strong> <span id="modalOldVal" style="color: #e53e3e; text-decoration: line-through;"></span></p>
+            <p><strong>Suggested Fix:</strong> <span id="modalNewVal" style="color: #2f855a; font-weight: bold;"></span></p>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button class="btn" style="background: #718096;" onclick="closeFixModal()">Cancel</button>
+            <button class="btn btn-download" id="modalApplyBtn">Apply Fix</button>
+        </div>
     </div>
 
     <script>
-        // Optional: Show uploaded file name
-        const fileInput = document.getElementById("resumeFile");
-        const fileNameDisplay = document.getElementById("fileNameDisplay");
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-        fileInput.addEventListener("change", (e) => {
-            if (e.target.files.length > 0) {
-                fileNameDisplay.textContent = "Selected File: " + e.target.files[0].name;
-                fileNameDisplay.style.color = "#16a34a";
+        let activeTargetElement = null;
+
+        function showLandingView() {
+            document.getElementById('landing-view').style.display = 'block';
+            document.getElementById('editor-workspace').style.display = 'none';
+        }
+
+        function switchToEditor() {
+            document.getElementById('landing-view').style.display = 'none';
+            document.getElementById('editor-workspace').style.display = 'block';
+            analyzeATSScore();
+        }
+
+        function selectTemplateAndOpen(tplName) {
+            applyTemplate(tplName);
+            switchToEditor();
+        }
+
+        function applyTemplate(tplName, cardEl) {
+            const content = document.getElementById('resume-content');
+            content.className = tplName;
+
+            document.querySelectorAll('.sidebar .template-card').forEach(card => card.classList.remove('active'));
+            const activeSideCard = document.getElementById('side-' + tplName);
+            if (activeSideCard) activeSideCard.classList.add('active');
+
+            analyzeATSScore();
+        }
+
+        function toggleEditing() {
+            const content = document.getElementById('resume-content');
+            const btn = document.getElementById('toggleEditBtn');
+            const isEditable = content.getAttribute('contenteditable') === 'true';
+
+            if (isEditable) {
+                content.setAttribute('contenteditable', 'false');
+                btn.innerText = '✏️ Edit Mode';
+                btn.style.backgroundColor = '#dd6b20';
+            } else {
+                content.setAttribute('contenteditable', 'true');
+                btn.innerText = '✅ Save Editing';
+                btn.style.backgroundColor = '#38a169';
             }
-        });
-    </script>
+        }
 
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            switchToEditor();
+
+            if (file.type === "application/pdf" || file.name.endsWith('.pdf')) {
+                parseStructuredPDF(file);
+            } else {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('resume-content').innerHTML = e.target.result;
+                    enableEditingDirectly();
+                    analyzeATSScore();
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function parseStructuredPDF(file) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const typedarray = new Uint8Array(this.result);
+                pdfjsLib.getDocument(typedarray).promise.then(async function(pdf) {
+                    let htmlFormattedContent = '';
+
+                    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                        const page = await pdf.getPage(pageNum);
+                        const textContent = await page.getTextContent();
+                        
+                        let lastY = null;
+                        let pageLines = [];
+                        let currentLine = "";
+
+                        textContent.items.forEach(function(item) {
+                            const currentY = item.transform[5];
+                            if (lastY !== null && Math.abs(currentY - lastY) > 3) {
+                                pageLines.push(currentLine.trim());
+                                currentLine = item.str;
+                            } else {
+                                currentLine += (currentLine ? " " : "") + item.str;
+                            }
+                            lastY = currentY;
+                        });
+
+                        if (currentLine) pageLines.push(currentLine.trim());
+
+                        pageLines.forEach(line => {
+                            if (!line) return;
+                            if (line === line.toUpperCase() && line.length > 3 && !line.includes('|')) {
+                                htmlFormattedContent += `<div class="section-title">${line}</div>`;
+                            } else if (line.startsWith('•') || line.startsWith('-')) {
+                                htmlFormattedContent += `<ul class="bullets"><li>${line.replace(/^[•-]\s*/, '')}</li></ul>`;
+                            } else {
+                                htmlFormattedContent += `<div style="margin-bottom:3px;">${line}</div>`;
+                            }
+                        });
+                    }
+
+                    document.getElementById('resume-content').innerHTML = htmlFormattedContent;
+                    enableEditingDirectly();
+                    analyzeATSScore();
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function enableEditingDirectly() {
+            const content = document.getElementById('resume-content');
+            const btn = document.getElementById('toggleEditBtn');
+            content.setAttribute('contenteditable', 'true');
+            btn.innerText = '✅ Save Editing';
+            btn.style.backgroundColor = '#38a169';
+        }
+
+        function analyzeATSScore() {
+            const contentDiv = document.getElementById('resume-content');
+            let textContent = contentDiv.innerText;
+            const box = document.getElementById('ats-feedback-box');
+            const scoreVal = document.getElementById('ats-score-val');
+            const sugList = document.getElementById('ats-suggestions-list');
+
+            box.style.display = 'block';
+            let score = 100;
+            let suggestions = [];
+
+            // Reset previous highlights
+            const existingHighlights = contentDiv.querySelectorAll('.ats-error-clickable');
+            existingHighlights.forEach(el => {
+                const parent = el.parentNode;
+                parent.replaceChild(document.createTextNode(el.innerText), el);
+            });
+
+            // 1. Highlight "Arts Stream"
+            if (textContent.toLowerCase().includes("arts stream")) {
+                score -= 10;
+                contentDiv.innerHTML = contentDiv.innerHTML.replace(
+                    /Arts Stream/gi,
+                    `<span class="ats-error-clickable" onclick="openFixModal(this, 'Arts Stream', '', 'Non-technical keyword triggered filter')">Arts Stream</span>`
+                );
+                suggestions.push(`🚨 <strong>Red Flag:</strong> 'Arts Stream' detected. Click on red text to remove.`);
+            }
+
+            // 2. Section Checks
+            const requiredSections = [
+                { title: "SUMMARY", penalty: 10, name: "PROFESSIONAL SUMMARY" },
+                { title: "EXPERIENCE", penalty: 10, name: "EXPERIENCE" },
+                { title: "EDUCATION", penalty: 10, name: "EDUCATION" },
+                { title: "SKILLS", penalty: 10, name: "TECHNICAL SKILLS" }
+            ];
+
+            requiredSections.forEach(sec => {
+                if (!textContent.toUpperCase().includes(sec.title)) {
+                    score -= sec.penalty;
+                    suggestions.push(`❌ <strong>Missing Section:</strong> Standard heading '${sec.name}' is missing.`);
+                }
+            });
+
+            if (score === 100) {
+                suggestions.push("🎉 <strong>Excellent!</strong> Your resume is 100% ATS Compatible.");
+                scoreVal.style.color = "#2f855a";
+            } else {
+                scoreVal.style.color = score >= 80 ? "#2b6cb0" : "#e53e3e";
+            }
+
+            scoreVal.innerText = score + "%";
+            sugList.innerHTML = suggestions.map(item => `<li>${item}</li>`).join('');
+        }
+
+        function openFixModal(element, oldText, newText, issueDescription) {
+            activeTargetElement = element;
+            document.getElementById('modalIssueText').innerText = issueDescription;
+            document.getElementById('modalOldVal').innerText = oldText;
+            document.getElementById('modalNewVal').innerText = newText ? newText : "[Remove]";
+
+            const applyBtn = document.getElementById('modalApplyBtn');
+            applyBtn.onclick = function() {
+                if (newText) {
+                    activeTargetElement.outerHTML = newText;
+                } else {
+                    activeTargetElement.remove();
+                }
+                closeFixModal();
+                analyzeATSScore();
+            };
+
+            document.getElementById('modalBackdrop').style.display = 'block';
+            document.getElementById('fixModal').style.display = 'block';
+        }
+
+        function closeFixModal() {
+            document.getElementById('modalBackdrop').style.display = 'none';
+            document.getElementById('fixModal').style.display = 'none';
+            activeTargetElement = null;
+        }
+
+        function downloadPDF() {
+            const content = document.getElementById('resume-content');
+            content.setAttribute('contenteditable', 'false');
+            
+            const existingHighlights = content.querySelectorAll('.ats-error-clickable');
+            existingHighlights.forEach(el => {
+                const parent = el.parentNode;
+                parent.replaceChild(document.createTextNode(el.innerText), el);
+            });
+
+            window.print();
+        }
+    </script>
 </body>
 </html>
