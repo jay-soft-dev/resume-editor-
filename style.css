@@ -10,10 +10,14 @@ body {
     color: #2c2c2c;
 }
 
+.hidden {
+    display: none !important;
+}
+
 /* TRANSPARENT IMAGES */
 .transparent-img {
     background-color: transparent !important;
-    mix-blend-mode: multiply; /* पांढरा बॅकग्राउंड काढून टाकण्यास मदत करतो */
+    mix-blend-mode: multiply;
     object-fit: contain;
 }
 
@@ -51,7 +55,7 @@ body {
 }
 
 .logo-box.mini {
-    background: #e11d48;
+    background: #4f46e5;
     color: white;
     padding: 2px 6px;
     border-radius: 4px;
@@ -366,6 +370,7 @@ body {
     box-shadow: 0 4px 12px rgba(88, 86, 214, 0.3);
 }
 
+/* CAROUSEL STYLES */
 .carousel-section {
     position: relative;
     padding: 30px 20px 60px;
@@ -508,11 +513,6 @@ body {
     cursor: pointer;
     z-index: 10;
     color: #64748b;
-    transition: color 0.2s ease;
-}
-
-.modal-close:hover {
-    color: #0f172a;
 }
 
 .modal-left {
@@ -526,42 +526,78 @@ body {
     text-align: center;
 }
 
-.modal-img {
-    width: 100%;
-    max-width: 250px;
-    height: auto;
-    object-fit: contain;
+.modal-preview-badge {
+    font-size: 14px;
+    font-weight: 700;
+    color: #4f46e5;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-/* MODAL FORM STYLES (UPDATED & FIXED) */
+.modal-img {
+    width: 100%;
+    max-width: 220px;
+    height: auto;
+}
+
+/* MODAL RIGHT & AUTH STYLES */
 .modal-right {
     width: 55%;
     padding: 30px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    max-height: 90vh;
-    overflow-y: auto;
 }
 
-.modal-right h2 {
-    font-size: 18px;
+.brand-logo-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
     font-weight: 800;
-    margin-bottom: 12px;
     color: #1e293b;
+    margin-bottom: 16px;
 }
 
-/* Modal Auth Buttons / Social Login */
-.auth-social-btns {
+.auth-tabs {
+    display: flex;
+    gap: 12px;
+    border-bottom: 2px solid #f1f5f9;
+    margin-bottom: 20px;
+}
+
+.auth-tab-btn {
+    padding: 8px 12px;
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+}
+
+.auth-tab-btn.active {
+    color: #4f46e5;
+    border-bottom-color: #4f46e5;
+}
+
+.auth-buttons {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 12px;
+    gap: 10px;
+    margin-bottom: 15px;
 }
 
 .btn-social {
     width: 100%;
-    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
     border: 1px solid #cbd5e1;
     border-radius: 8px;
     background: #ffffff;
@@ -569,11 +605,6 @@ body {
     font-weight: 600;
     color: #334155;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background 0.2s ease;
 }
 
 .btn-social:hover {
@@ -584,39 +615,32 @@ body {
     text-align: center;
     font-size: 12px;
     color: #94a3b8;
-    margin: 10px 0;
+    margin: 12px 0;
     position: relative;
 }
 
-/* Modal Form Controls */
-.modal-right form {
+.auth-form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
-.modal-right input[type="text"],
-.modal-right input[type="email"],
-.modal-right input[type="password"],
-.modal-right input[type="tel"] {
+.form-group input {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #cbd5e1;
     border-radius: 8px;
     font-size: 13px;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.modal-right input:focus {
+.form-group input:focus {
     border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
-.modal-right button[type="submit"],
-.btn-auth-submit {
+.btn-submit {
     width: 100%;
-    padding: 10px;
+    padding: 11px;
     background-color: #4f46e5;
     color: #ffffff;
     border: none;
@@ -624,16 +648,20 @@ body {
     font-weight: 700;
     font-size: 14px;
     cursor: pointer;
-    margin-top: 6px;
-    transition: background 0.2s ease;
+    margin-top: 4px;
 }
 
-.modal-right button[type="submit"]:hover,
-.btn-auth-submit:hover {
+.btn-submit:hover {
     background-color: #4338ca;
 }
 
-/* Input Row for OTP/Phone */
+.radio-group {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    margin-bottom: 14px;
+}
+
 .input-group-row {
     display: flex;
     gap: 8px;
@@ -644,7 +672,7 @@ body {
 }
 
 .btn-inline {
-    padding: 8px 12px;
+    padding: 10px 14px;
     background: #e2e8f0;
     border: none;
     border-radius: 8px;
@@ -657,11 +685,4 @@ body {
 
 .btn-inline:hover {
     background: #cbd5e1;
-}
-
-.radio-group {
-    display: flex;
-    gap: 16px;
-    font-size: 13px;
-    margin: 4px 0;
 }

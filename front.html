@@ -166,7 +166,7 @@
 
             <div class="modal-right">
                 <div class="brand-logo-container">
-                    <span class="express-icon">P</span>
+                    <span class="logo-box mini">P</span>
                     <span class="brand-title">Perfect Resume</span>
                 </div>
 
@@ -177,11 +177,11 @@
 
                 <div class="auth-view active" id="signInView">
                     <div class="auth-buttons">
-                        <button class="auth-btn google-btn">
+                        <button class="btn-social google-btn">
                             <img src="https://www.svgrepo.com/show/475656/google-color.svg" width="18" alt="Google">
                             Continue with Google
                         </button>
-                        <button class="auth-btn facebook-btn">
+                        <button class="btn-social facebook-btn">
                             <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" width="18" alt="Facebook">
                             Continue with Facebook
                         </button>
@@ -200,8 +200,8 @@
                     </form>
                 </div>
 
-                <div class="auth-view" id="signUpView">
-                    <div class="signup-toggle">
+                <div class="auth-view hidden" id="signUpView">
+                    <div class="radio-group">
                         <label><input type="radio" name="signupType" value="email" checked id="radioEmail"> Email</label>
                         <label><input type="radio" name="signupType" value="phone" id="radioPhone"> Phone (OTP)</label>
                     </div>
@@ -223,9 +223,9 @@
                         <div class="form-group">
                             <input type="tel" placeholder="Mobile Number (+91...)" required>
                         </div>
-                        <div class="form-group otp-group">
+                        <div class="form-group input-group-row">
                             <input type="text" placeholder="Enter OTP" maxlength="6">
-                            <button type="button" class="btn-send-otp" id="sendOtpBtn">Get OTP</button>
+                            <button type="button" class="btn-inline" id="sendOtpBtn">Get OTP</button>
                         </div>
                         <button type="submit" class="btn-submit">Verify & Sign Up</button>
                     </form>
@@ -250,8 +250,9 @@
         <div class="media-container">
             <picture>
                 <img alt="Resume Download" class="transparent-img" src="https://www.adobe.com/express/create/media_141401a8427f57109335a76070cb03f0e3b166e6c.png?width=2000&format=webply&optimize=medium" width="500" height="500" fetchpriority="high">
+            </picture>
+        </div>
     </div>
-
 
     <!-- Firebase Script -->
     <script type="module">
@@ -262,8 +263,7 @@
             signInWithEmailAndPassword, 
             GoogleAuthProvider, 
             signInWithPopup,
-            onAuthStateChanged,
-            signOut 
+            onAuthStateChanged
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -332,7 +332,45 @@
             closeAuthModal.addEventListener("click", hideModal);
         }
 
+        /* Tab Switch Logic */
+        const tabSignInBtn = document.getElementById("tabSignInBtn");
+        const tabSignUpBtn = document.getElementById("tabSignUpBtn");
+        const signInView = document.getElementById("signInView");
+        const signUpView = document.getElementById("signUpView");
+
+        if(tabSignInBtn && tabSignUpBtn) {
+            tabSignInBtn.addEventListener("click", () => {
+                tabSignInBtn.classList.add("active");
+                tabSignUpBtn.classList.remove("active");
+                signInView.classList.remove("hidden");
+                signUpView.classList.add("hidden");
+            });
+
+            tabSignUpBtn.addEventListener("click", () => {
+                tabSignUpBtn.classList.add("active");
+                tabSignInBtn.classList.remove("active");
+                signUpView.classList.remove("hidden");
+                signInView.classList.add("hidden");
+            });
+        }
+
+        /* Email vs Phone Toggle */
+        const radioEmail = document.getElementById("radioEmail");
+        const radioPhone = document.getElementById("radioPhone");
         const emailSignUpForm = document.getElementById("emailSignUpForm");
+        const phoneSignUpForm = document.getElementById("phoneSignUpForm");
+
+        if(radioEmail && radioPhone) {
+            radioEmail.addEventListener("change", () => {
+                emailSignUpForm.classList.remove("hidden");
+                phoneSignUpForm.classList.add("hidden");
+            });
+            radioPhone.addEventListener("change", () => {
+                phoneSignUpForm.classList.remove("hidden");
+                emailSignUpForm.classList.add("hidden");
+            });
+        }
+
         if (emailSignUpForm) {
             emailSignUpForm.addEventListener("submit", async (e) => {
                 e.preventDefault();
