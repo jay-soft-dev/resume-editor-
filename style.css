@@ -529,3 +529,27 @@ body {
     max-width: 250px;
     height: auto;
 }
+
+.modal-right {
+    width: 55%;
+    padding: 30px;
+}
+
+.modal-img {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-right {
+    width: 55%;
+    padding: 30px;
+}
+
+.modal-img {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+}
