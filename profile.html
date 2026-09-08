@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Perfect Resume</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-container { max-width: 900px; margin: 40px auto; padding: 20px; font-family: Arial, sans-serif; }
+        .user-card { background: #f4f6f8; padding: 20px; border-radius: 8px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .resume-history { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .history-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #fff; }
+        .action-btns { margin-top: 15px; display: flex; gap: 10px; }
+        .btn-action { padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 14px; }
+        .btn-edit { background: #4F46E5; color: white; }
+        .btn-download { background: #10B981; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <h2>My Account & Resume History</h2>
+        
+        <!-- User Info Card -->
+        <div class="user-card">
+            <div>
+                <h3 id="userName">User Name</h3>
+                <p id="userEmail">user@example.com</p>
+            </div>
+            <button id="logoutBtn" class="btn-action" style="background:#EF4444; color:white;">Logout</button>
+        </div>
+
+        <h3>Your Resumes</h3>
+        <div class="resume-history" id="resumeHistoryContainer">
+            <!-- Saved Resumes will be loaded here dynamically -->
+        </div>
+    </div>
+
+    <!-- Firebase SDK & Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA1zdMeCbPgDIeLsawTxL0dMQ-Gfxp3q4g",
+            authDomain: "perfect-resume-674b9.firebaseapp.com",
+            projectId: "perfect-resume-674b9",
+            storageBucket: "perfect-resume-674b9.firebasestorage.app",
+            messagingSenderId: "558664783632",
+            appId: "1:558664783632:web:d5be3543e4e77784dd3795"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                document.getElementById("userName").textContent = user.displayName || "User";
+                document.getElementById("userEmail").textContent = user.email;
+
+                // User चे सेव्ह झालेले Resumes Firestore मधून लोड करा
+                loadUserResumes(user.uid);
+            } else {
+                // युझर लॉगिन नसेल तर मुख्य पानावर पाठवा
+                window.location.href = "index.html";
+            }
+        });
+
+        // Logout Event
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            signOut(auth).then(() => window.location.href = "index.html");
+        });
+
+        // Fetch User Resumes
+        async function loadUserResumes(userId) {
+            const historyContainer = document.getElementById("resumeHistoryContainer");
+            const q = query(collection(db, "resumes"), where("userId", "==", userId));
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                historyContainer.innerHTML = "<p>No saved resumes found. Create your first resume!</p>";
+                return;
+            }
+
+            historyContainer.innerHTML = "";
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const card = `
+                    <div class="history-card">
+                        <h4>${data.title || 'Untitled Resume'}</h4>
+                        <p>Last Modified: ${data.updatedAt ? new Date(data.updatedAt.toDate()).toLocaleDateString() : 'N/A'}</p>
+                        <div class="action-btns">
+                            <a href="resume-builder.html?id=${doc.id}" class="btn-action btn-edit">Edit</a>
+                            <button onclick="downloadPDF('${doc.id}')" class="btn-action btn-download">Download PDF</button>
+                        </div>
+                    </div>
+                `;
+                historyContainer.innerHTML += card;
+            });
+        }
+    </script>
+</body>
+</html>

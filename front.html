@@ -161,7 +161,7 @@
                     <span class="preview-icon">✨</span>
                     <p>Build Your Resume Free</p>
                 </div>
-                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" alt="Illustration" class="modal-img">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" alt="Illustration" class="modal-img transparent-img">
             </div>
 
             <div class="modal-right">
@@ -234,7 +234,21 @@
         </div>
     </div>
 
-    <!-- Firebase Script with Login Protection Logic -->
+    <div class="steps-content">
+        <div class="media-container">
+            <picture>
+                <img alt="Resume Example" class="transparent-img" src="https://www.adobe.com/express/create/media_14668abe41718f9d7959f03389aa4c17331368973.png?width=2000&format=webply&optimize=medium" width="400" height="200" fetchpriority="high">
+            </picture>
+        </div>
+
+        <div class="media-container">
+            <picture>
+                <img alt="Resume Design" class="transparent-img" src="https://www.adobe.com/express/create/media_11680c8ea758ac4f378e898c7d948e1a51c076165.png?width=2000&format=webply&optimize=medium" width="500" height="500" fetchpriority="high">
+            </picture>
+        </div>
+    </div>
+
+    <!-- Firebase Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
@@ -274,24 +288,28 @@
             if (authModal) authModal.classList.remove("active");
         }
 
-        // Check Auth State
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             const openAuthBtn = document.getElementById("openAuthBtn");
             if (user) {
                 if (openAuthBtn) {
-                    openAuthBtn.textContent = "Sign Out (" + (user.displayName || user.email.split('@')[0]) + ")";
-                    openAuthBtn.onclick = () => signOut(auth);
+                    openAuthBtn.textContent = "My Profile (" + (user.displayName || user.email.split('@')[0]) + ")";
+                    openAuthBtn.onclick = (e) => {
+                        e.preventDefault();
+                        window.location.href = "profile.html";
+                    };
                 }
             } else {
                 if (openAuthBtn) {
                     openAuthBtn.textContent = "Sign in";
-                    openAuthBtn.onclick = () => showModal();
+                    openAuthBtn.onclick = (e) => {
+                        e.preventDefault();
+                        showModal();
+                    };
                 }
             }
         });
 
-        // Protected Routes (Create Resume Buttons click listener)
         document.querySelectorAll(".protected-route").forEach(button => {
             button.addEventListener("click", (e) => {
                 e.preventDefault();
@@ -304,13 +322,11 @@
             });
         });
 
-        // Close Modal Listener
         const closeAuthModal = document.getElementById("closeAuthModal");
         if (closeAuthModal) {
             closeAuthModal.addEventListener("click", hideModal);
         }
 
-        // Email Sign-Up
         const emailSignUpForm = document.getElementById("emailSignUpForm");
         if (emailSignUpForm) {
             emailSignUpForm.addEventListener("submit", async (e) => {
@@ -328,7 +344,6 @@
             });
         }
 
-        // Email Sign-In
         const signInForm = document.getElementById("signInForm");
         if (signInForm) {
             signInForm.addEventListener("submit", async (e) => {
@@ -346,7 +361,6 @@
             });
         }
 
-        // Google Sign-In
         const googleBtn = document.querySelector(".google-btn");
         if (googleBtn) {
             googleBtn.addEventListener("click", async () => {
@@ -363,29 +377,5 @@
     </script>
 
     <script src="script.js"></script>
-
-    <div class="steps-content">
-        <div class="media-container">
-            <picture>
-                <img alt="" src="https://www.adobe.com/express/create/media_14668abe41718f9d7959f03389aa4c17331368973.png?width=2000&format=webply&optimize=medium" width="400" height="200" fetchpriority="high">
-            </picture>
-        </div>
-        <ol class="steps">
-            <li class="step" tabindex="0" aria-expanded="true" aria-controls="step-detail-0">
-                <div class="step-indicator"></div>
-                <div class="step-content">
-                    <h3 id="step-title-0"></h3>
-                    <h3 id="pick-a-resume-template">
-                        <strong>1. Pick a resume template.</strong>
-                    </h3>
-                    <div class="detail-container" id="step-detail-0" aria-labelledby="step-title-0" style="max-height: 72px;">
-                        <div class="detail-text">
-                            Browse a variety of professional templates, from modern and minimalist to creative and corporate, to match your style and industry. Whether you're applying for a first job, a promotion, or a career change, there's a perfect starting point for every resume.
-                        </div>
-                    </div>
-                </div>
-            </li>
-        </ol>
-    </div>
 </body>
 </html>
