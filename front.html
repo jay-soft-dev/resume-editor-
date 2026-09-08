@@ -14,7 +14,7 @@
                 <span class="logo-box">P</span> Perfect Resume
             </a>
 
-            <a href="resume-builder.html" class="nav-item" style="text-decoration: none; color: inherit;">Resume Builder</a>
+            <a href="#" class="nav-item protected-route" style="text-decoration: none; color: inherit;">Resume Builder</a>
             
             <div class="nav-item-wrapper dropdown-wrapper">
                 Create <span class="arrow-icon">˅</span>
@@ -58,7 +58,7 @@
                             <li>AI Drawing</li>
                         </ul>
                         <button class="btn-menu-learn">Learn more</button>
-                        <button class="btn-menu-app">Get Perfect Resume Free</button>
+                        <button class="btn-menu-app protected-route">Get Perfect Resume Free</button>
                     </div>
                 </div>
             </div>
@@ -90,7 +90,7 @@
                     <div class="menu-column">  
                         <div class="menu-actions">
                             <button class="btn-menu-learn">Learn more</button>
-                            <button class="btn-menu-app">Get Perfect Resume Free</button>
+                            <button class="btn-menu-app protected-route">Get Perfect Resume Free</button>
                         </div>
                     </div>
                 </div>
@@ -98,7 +98,7 @@
         </div>
 
         <div class="nav-right">
-            <a href="resume-builder.html" class="btn-go-app" style="text-decoration: none; display: inline-block; text-align: center; line-height: normal;">Go to App</a>
+            <a href="#" class="btn-go-app protected-route" style="text-decoration: none; display: inline-block; text-align: center; line-height: normal;">Go to App</a>
             <span class="grid-icon">::</span>
             <button class="btn-sign-in" id="openAuthBtn">Sign in</button>
         </div>
@@ -114,7 +114,7 @@
             <p class="hero-desc">
                 Perfect Resume makes it easy to create professional, ATS-friendly resumes for any job role, quickly and easily. Start with free, professionally designed templates at your fingertips.
             </p>
-            <button class="btn-make-resume" id="createResumeBtn">Create My Resume</button>
+            <button class="btn-make-resume protected-route" id="createResumeBtn">Create My Resume</button>
             <p class="disclaimer">* Available for instant PDF download worldwide</p>
         </div>
 
@@ -138,12 +138,12 @@
                 <div class="mini-card" style="background:#fed7aa;"></div>
             </div>
 
-            <button class="btn-download-floating">📄 Download PDF</button>
+            <button class="btn-download-floating protected-route">📄 Download PDF</button>
         </div>
     </section>
 
     <div class="top-cta-wrapper">
-        <button class="btn-center-cta" id="createResumeBtn2">Create your resume</button>
+        <button class="btn-center-cta protected-route" id="createResumeBtn2">Create your resume</button>
     </div>
 
     <div class="carousel-nav">
@@ -151,6 +151,7 @@
         <button class="nav-btn next-btn" id="nextBtn">›</button>
     </div>
 
+    <!-- Auth Modal -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-card">
             <span class="modal-close" id="closeAuthModal">&times;</span>
@@ -233,6 +234,7 @@
         </div>
     </div>
 
+    <!-- Firebase Script with Login Protection Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
@@ -260,12 +262,21 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        let currentUser = null;
+
+        function showModal() {
+            const authModal = document.getElementById("authModal");
+            if (authModal) authModal.classList.add("active");
+        }
+
         function hideModal() {
             const authModal = document.getElementById("authModal");
             if (authModal) authModal.classList.remove("active");
         }
 
+        // Check Auth State
         onAuthStateChanged(auth, (user) => {
+            currentUser = user;
             const openAuthBtn = document.getElementById("openAuthBtn");
             if (user) {
                 if (openAuthBtn) {
@@ -275,11 +286,31 @@
             } else {
                 if (openAuthBtn) {
                     openAuthBtn.textContent = "Sign in";
-                    openAuthBtn.onclick = null;
+                    openAuthBtn.onclick = () => showModal();
                 }
             }
         });
 
+        // Protected Routes (Create Resume Buttons click listener)
+        document.querySelectorAll(".protected-route").forEach(button => {
+            button.addEventListener("click", (e) => {
+                e.preventDefault();
+                if (!currentUser) {
+                    alert("Please login here to create your resume.");
+                    showModal();
+                } else {
+                    window.location.href = "resume-builder.html";
+                }
+            });
+        });
+
+        // Close Modal Listener
+        const closeAuthModal = document.getElementById("closeAuthModal");
+        if (closeAuthModal) {
+            closeAuthModal.addEventListener("click", hideModal);
+        }
+
+        // Email Sign-Up
         const emailSignUpForm = document.getElementById("emailSignUpForm");
         if (emailSignUpForm) {
             emailSignUpForm.addEventListener("submit", async (e) => {
@@ -297,6 +328,7 @@
             });
         }
 
+        // Email Sign-In
         const signInForm = document.getElementById("signInForm");
         if (signInForm) {
             signInForm.addEventListener("submit", async (e) => {
@@ -314,6 +346,7 @@
             });
         }
 
+        // Google Sign-In
         const googleBtn = document.querySelector(".google-btn");
         if (googleBtn) {
             googleBtn.addEventListener("click", async () => {
@@ -330,29 +363,29 @@
     </script>
 
     <script src="script.js"></script>
+
     <div class="steps-content">
-  <div class="media-container">
-    <picture>
-     
-      <img alt="" src="https://www.adobe.com/express/create/media_14668abe41718f9d7959f03389aa4c17331368973.png?width=2000&format=webply&optimize=medium"width="400" height="200" fetchpriority="high">
-    </picture>
-  </div>
-  <ol class="steps">
-    <li class="step" tabindex="0" aria-expanded="true" aria-controls="step-detail-0">
-      <div class="step-indicator"></div>
-      <div class="step-content">
-        <h3 id="step-title-0"></h3>
-        <h3 id="pick-a-resume-template">
-          <strong>1. Pick a resume template.</strong>
-        </h3>
-        <div class="detail-container" id="step-detail-0" aria-labelledby="step-title-0" style="max-height: 72px;">
-          <div class="detail-text">
-            Browse a variety of professional templates, from modern and minimalist to creative and corporate, to match your style and industry. Whether you're applying for a first job, a promotion, or a career change, there's a perfect starting point for every resume.
-          </div>
+        <div class="media-container">
+            <picture>
+                <img alt="" src="https://www.adobe.com/express/create/media_14668abe41718f9d7959f03389aa4c17331368973.png?width=2000&format=webply&optimize=medium" width="400" height="200" fetchpriority="high">
+            </picture>
         </div>
-      </div>
-    </li>
-  </ol>
-</div>
+        <ol class="steps">
+            <li class="step" tabindex="0" aria-expanded="true" aria-controls="step-detail-0">
+                <div class="step-indicator"></div>
+                <div class="step-content">
+                    <h3 id="step-title-0"></h3>
+                    <h3 id="pick-a-resume-template">
+                        <strong>1. Pick a resume template.</strong>
+                    </h3>
+                    <div class="detail-container" id="step-detail-0" aria-labelledby="step-title-0" style="max-height: 72px;">
+                        <div class="detail-text">
+                            Browse a variety of professional templates, from modern and minimalist to creative and corporate, to match your style and industry. Whether you're applying for a first job, a promotion, or a career change, there's a perfect starting point for every resume.
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ol>
+    </div>
 </body>
 </html>

@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Create Mega Menu List Items Redirect Logic (Updated for Logo Page)
+    // Create Mega Menu List Items Redirect Logic
     const createMenuOptions = document.querySelectorAll(".mega-menu-container .menu-column ul li"); 
     createMenuOptions.forEach(item => {
         item.addEventListener("click", (e) => {
@@ -64,25 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
-
-    // --- NEW: REDIRECT "CREATE MY RESUME" BUTTONS TO RESUME-BUILDER.HTML ---
-    const createBtn1 = document.getElementById("createResumeBtn");
-    const createBtn2 = document.getElementById("createResumeBtn2");
-
-    if (createBtn1) {
-        createBtn1.addEventListener("click", (e) => {
-            e.preventDefault();
-            window.location.href = "resume-builder.html";
-        });
-    }
-
-    if (createBtn2) {
-        createBtn2.addEventListener("click", (e) => {
-            e.preventDefault();
-            window.location.href = "resume-builder.html";
-        });
-    }
-    // ---------------------------------------------------------------------
 
     // 4. SIGN IN & SIGN UP MODAL & TAB LOGIC
     const authModal = document.getElementById("authModal");
@@ -137,13 +118,17 @@ document.addEventListener("DOMContentLoaded", () => {
     // Switch between Email and Phone OTP Sign Up options
     if (radioEmail && radioPhone) {
         radioEmail.addEventListener("change", () => {
-            emailSignUpForm.classList.remove("hidden");
-            phoneSignUpForm.classList.add("hidden");
+            if (emailSignUpForm && phoneSignUpForm) {
+                emailSignUpForm.classList.remove("hidden");
+                phoneSignUpForm.classList.add("hidden");
+            }
         });
 
         radioPhone.addEventListener("change", () => {
-            phoneSignUpForm.classList.remove("hidden");
-            emailSignUpForm.classList.add("hidden");
+            if (emailSignUpForm && phoneSignUpForm) {
+                phoneSignUpForm.classList.remove("hidden");
+                emailSignUpForm.classList.add("hidden");
+            }
         });
     }
 });
