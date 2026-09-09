@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Maker - Perfect Resume</title>
+    <link rel="stylesheet" href="logo-style.css">
+    <!-- Google Fonts for Logos -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Playfair+Display:wght@700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <!-- Canvas Library for PNG Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+    <header class="logo-header">
+        <a href="index.html" class="back-link">← Back to Main Page</a>
+        <h2>🎨 Professional Logo Creator</h2>
+    </header>
+
+    <div class="logo-container">
+        <!-- Control Panel (Left Side) -->
+        <div class="controls-panel">
+            <h3>Logo Details</h3>
+            
+            <div class="input-group">
+                <label>Brand Name:</label>
+                <input type="text" id="brandName" value="My Brand" oninput="generateLogo()">
+            </div>
+
+            <div class="input-group">
+                <label>Tagline / Slogan:</label>
+                <input type="text" id="tagline" value="CREATIVE SOLUTIONS" oninput="generateLogo()">
+            </div>
+
+            <div class="input-group">
+                <label>Select Icon:</label>
+                <select id="iconSelect" onchange="generateLogo()">
+                    <option value="🚀">🚀 Rocket / Tech</option>
+                    <option value="⚡">⚡ Bolt / Fast</option>
+                    <option value="💼">💼 Business / Work</option>
+                    <option value="👑">👑 Crown / Premium</option>
+                    <option value="🎯">🎯 Target / Focus</option>
+                    <option value="💎">💎 Diamond / Luxury</option>
+                    <option value="🔥">🔥 Fire / Passion</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Font Style:</label>
+                <select id="fontSelect" onchange="generateLogo()">
+                    <option value="'Poppins', sans-serif">Poppins (Modern & Clean)</option>
+                    <option value="'Playfair Display', serif">Playfair (Classic & Bold)</option>
+                    <option value="'Montserrat', sans-serif">Montserrat (Stylish)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Primary Color:</label>
+                <input type="color" id="primaryColor" value="#4F46E5" oninput="generateLogo()">
+            </div>
+
+            <div class="input-group">
+                <label>Background Color:</label>
+                <input type="color" id="bgColor" value="#ffffff" oninput="generateLogo()">
+            </div>
+
+            <button class="btn-download" onclick="downloadPNG()">Download Logo (PNG) 📥</button>
+        </div>
+
+        <!-- Live Preview Area (Right Side) -->
+        <div class="preview-panel">
+            <div id="logoCard" class="logo-box">
+                <div id="logoIcon" class="icon-display">🚀</div>
+                <h1 id="logoTitle">My Brand</h1>
+                <p id="logoSubtitle">CREATIVE SOLUTIONS</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="logo-script.js"></script>
+</body>
+</html>
