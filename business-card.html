@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Business Card Builder</title>
+    <!-- QRCode.js for generating dynamic QR codes -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Top Header */
+        .navbar {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 14px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 800;
+            color: #4f46e5;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 9px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary { background: #4f46e5; color: #fff; }
+        .btn-primary:hover { background: #4338ca; }
+
+        .btn-outline { background: #ffffff; border: 1px solid #cbd5e1; color: #334155; }
+        .btn-outline:hover { background: #f8fafc; }
+
+        /* Main Workspace Layout */
+        .workspace {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            gap: 24px;
+            padding: 24px;
+        }
+
+        /* Form Controls Panel */
+        .editor-panel {
+            width: 400px;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            height: fit-content;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 700;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+            color: #1e293b;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .form-group input {
+            padding: 9px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+        }
+
+        /* Color Options */
+        .color-palette {
+            display: flex;
+            gap: 10px;
+        }
+
+        .color-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            cursor: pointer;
+            box-shadow: 0 0 0 1px #cbd5e1;
+        }
+
+        /* Preview Canvas Area */
+        .preview-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .preview-controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Standard Business Card (3.5" x 2" Ratio) */
+        .card-container {
+            width: 450px;
+            height: 257px;
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: left;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .card-inner.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* Theme Styles */
+        .theme-indigo { border-top: 8px solid #4f46e5; }
+        .theme-indigo .accent-text { color: #4f46e5; }
+
+        .theme-dark { background: #0f172a; color: #ffffff; border-top: 8px solid #334155; }
+        .theme-dark .accent-text { color: #818cf8; }
+        .theme-dark .sub-text { color: #94a3b8 !important; }
+
+        .theme-emerald { border-top: 8px solid #059669; }
+        .theme-emerald .accent-text { color: #059669; }
+
+        .company-title {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .person-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .person-role {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .contact-details {
+            font-size: 11px;
+            color: #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .contact-info p {
+            margin-bottom: 3px;
+        }
+
+        #qrcode {
+            width: 50px;
+            height: 50px;
+        }
+
+        @media print {
+            .navbar, .editor-panel, .preview-controls { display: none !important; }
+            body { background: white; }
+            .workspace { padding: 0; margin: 0; }
+            .card-container { width: 3.5in; height: 2in; page-break-after: always; }
+            .card-inner.flipped { transform: none; }
+            .card-back { transform: none; position: relative; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <span>🎴</span> Business Card Maker
+        </div>
+        <div>
+            <button class="btn btn-outline" onclick="window.history.back()">Back</button>
+            <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Save PDF</button>
+        </div>
+    </nav>
+
+    <div class="workspace">
+        <!-- Editor Controls Side Panel -->
+        <div class="editor-panel">
+            <h3 class="panel-title">Card Details</h3>
+
+            <div class="form-group">
+                <label>Company Name</label>
+                <input type="text" id="inputCompany" value="TECH CORP SOLUTIONS" oninput="updateCard()">
+            </div>
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="inputName" value="Jay Pawar" oninput="updateCard()">
+            </div>
+
+            <div class="form-group">
+                <label>Job Title</label>
+                <input type="text" id="inputRole" value="Full Stack Developer" oninput="updateCard()">
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" id="inputPhone" value="+91 98765 43210" oninput="updateCard()">
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="inputEmail" value="jayinter89@gmail.com" oninput="updateCard()">
+            </div>
+
+            <div class="form-group">
+                <label>Website / Portfolio</label>
+                <input type="text" id="inputWebsite" value="github.com/jay-soft-dev" oninput="updateCard()">
+            </div>
+
+            <div class="form-group">
+                <label>Theme Style</label>
+                <div class="color-palette">
+                    <div class="color-btn" style="background:#4f46e5;" onclick="setTheme('theme-indigo')"></div>
+                    <div class="color-btn" style="background:#0f172a;" onclick="setTheme('theme-dark')"></div>
+                    <div class="color-btn" style="background:#059669;" onclick="setTheme('theme-emerald')"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Preview Panel -->
+        <div class="preview-panel">
+            <div class="preview-controls">
+                <button class="btn btn-outline" onclick="flipCard()">🔄 Flip Side (Front/Back)</button>
+            </div>
+
+            <div class="card-container">
+                <div class="card-inner" id="cardInner">
+                    <!-- FRONT SIDE -->
+                    <div class="card-front theme-indigo" id="cardFront">
+                        <div class="company-title accent-text" id="dispCompany">TECH CORP SOLUTIONS</div>
+                        <div>
+                            <div class="person-name" id="dispName">Jay Pawar</div>
+                            <div class="person-role sub-text" id="dispRole">Full Stack Developer</div>
+                        </div>
+                        <div class="contact-details">
+                            <div class="contact-info sub-text">
+                                <p>📞 <span id="dispPhone">+91 98765 43210</span></p>
+                                <p>✉️ <span id="dispEmail">jayinter89@gmail.com</span></p>
+                                <p>🌐 <span id="dispWebsite">github.com/jay-soft-dev</span></p>
+                            </div>
+                            <div id="qrcode"></div>
+                        </div>
+                    </div>
+
+                    <!-- BACK SIDE -->
+                    <div class="card-back theme-indigo" id="cardBack">
+                        <div class="company-title accent-text" style="font-size:22px;" id="dispCompanyBack">TECH CORP</div>
+                        <p class="sub-text" style="font-size:12px; margin-top:8px;">Innovating Web & Cloud Solutions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let qrCodeInstance = null;
+
+        function updateCard() {
+            const company = document.getElementById('inputCompany').value;
+            const name = document.getElementById('inputName').value;
+            const role = document.getElementById('inputRole').value;
+            const phone = document.getElementById('inputPhone').value;
+            const email = document.getElementById('inputEmail').value;
+            const website = document.getElementById('inputWebsite').value;
+
+            document.getElementById('dispCompany').innerText = company || 'COMPANY NAME';
+            document.getElementById('dispCompanyBack').innerText = company || 'COMPANY NAME';
+            document.getElementById('dispName').innerText = name || 'YOUR NAME';
+            document.getElementById('dispRole').innerText = role || 'YOUR TITLE';
+            document.getElementById('dispPhone').innerText = phone || '';
+            document.getElementById('dispEmail').innerText = email || '';
+            document.getElementById('dispWebsite').innerText = website || '';
+
+            generateQR(website || email || company);
+        }
+
+        function setTheme(themeName) {
+            const front = document.getElementById('cardFront');
+            const back = document.getElementById('cardBack');
+
+            front.className = 'card-front ' + themeName;
+            back.className = 'card-back ' + themeName;
+        }
+
+        function flipCard() {
+            document.getElementById('cardInner').classList.toggle('flipped');
+        }
+
+        function generateQR(text) {
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+            if (text) {
+                qrCodeInstance = new QRCode(qrContainer, {
+                    text: text,
+                    width: 50,
+                    height: 50
+                });
+            }
+        }
+
+        // Initialize QR code on load
+        window.onload = function() {
+            updateCard();
+        };
+    </script>
+</body>
+</html>
