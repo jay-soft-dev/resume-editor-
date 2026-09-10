@@ -3,156 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI & Custom Logo Maker - Perfect Resume</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8fafc;
-            margin: 0;
-            padding: 0;
-        }
-        .navbar {
-            background: #ffffff;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .brand-logo {
-            font-weight: bold;
-            font-size: 18px;
-            color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-        .logo-box {
-            background: #2563eb;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 6px;
-        }
-        .container {
-            max-width: 600px;
-            margin: 50px auto;
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            text-align: center;
-        }
-        h1 {
-            color: #1e293b;
-            margin-bottom: 10px;
-        }
-        p {
-            color: #64748b;
-            margin-bottom: 30px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #334155;
-        }
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        .btn-generate {
-            width: 100%;
-            padding: 14px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-generate:hover {
-            background: #1d4ed8;
-        }
-        .preview-box {
-            margin-top: 30px;
-            padding: 30px;
-            background: #f1f5f9;
-            border-radius: 12px;
-            display: inline-block;
-            min-width: 250px;
-        }
-    </style>
+    <title>Logo Maker - Perfect Resume</title>
+    <link rel="stylesheet" href="logo-style.css">
+    <!-- Google Fonts for Logos -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Playfair+Display:wght@700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <!-- Canvas Library for PNG Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <a href="index.html" class="brand-logo">
-            <span class="logo-box">P</span> Perfect Resume
-        </a>
-        <a href="index.html" style="color: #64748b; text-decoration: none; font-weight: 500;">← Back to Home</a>
-    </nav>
+    <header class="logo-header">
+        <!-- Back link updated to front.html -->
+        <a href="front.html" class="back-link">← Back to Main Page</a>
+        <h2>🎨 Professional Logo Creator</h2>
+    </header>
 
-    <!-- Main Container -->
-    <div class="container">
-        <h1>AI & Custom Logo Maker</h1>
-        <p>Design a professional and unique logo for your brand instantly.</p>
-        
-        <!-- Brand Name Input Field -->
-        <div class="form-group">
-            <label>Brand Name</label>
-            <input type="text" id="brandInput" placeholder="e.g. Spinks">
+    <div class="logo-container">
+        <!-- Control Panel (Left Side) -->
+        <div class="controls-panel">
+            <h3>Logo Details</h3>
+            
+            <div class="input-group">
+                <label>Brand Name:</label>
+                <input type="text" id="brandName" value="My Brand" oninput="generateLogo()">
+            </div>
+
+            <div class="input-group">
+                <label>Tagline / Slogan:</label>
+                <input type="text" id="tagline" value="CREATIVE SOLUTIONS" oninput="generateLogo()">
+            </div>
+
+            <div class="input-group">
+                <label>Select Icon:</label>
+                <select id="iconSelect" onchange="generateLogo()">
+                    <option value="🚀">🚀 Rocket / Tech</option>
+                    <option value="⚡">⚡ Bolt / Fast</option>
+                    <option value="💼">💼 Business / Work</option>
+                    <option value="👑">👑 Crown / Premium</option>
+                    <option value="🎯">🎯 Target / Focus</option>
+                    <option value="💎">💎 Diamond / Luxury</option>
+                    <option value="🔥">🔥 Fire / Passion</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Font Style:</label>
+                <select id="fontSelect" onchange="generateLogo()">
+                    <option value="'Poppins', sans-serif">Poppins (Modern & Clean)</option>
+                    <option value="'Playfair Display', serif">Playfair (Classic & Bold)</option>
+                    <option value="'Montserrat', sans-serif">Montserrat (Stylish)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Primary Color:</label>
+                <input type="color" id="primaryColor" value="#4F46E5" oninput="generateLogo()">
+            </div>
+
+            <div class="input-group">
+                <label>Background Color:</label>
+                <input type="color" id="bgColor" value="#ffffff" oninput="generateLogo()">
+            </div>
+
+            <button class="btn-download" onclick="downloadPNG()">Download Logo (PNG) 📥</button>
         </div>
 
-        <!-- Logo Style Selection Dropdown -->
-        <div class="form-group">
-            <label>Logo Style</label>
-            <select id="logoStyleSelect">
-                <option value="Modern & Minimal">Modern & Minimal</option>
-                <option value="Tech & Startup">Tech & Startup</option>
-                <option value="Creative & Bold">Creative & Bold</option>
-            </select>
+        <!-- Live Preview Area (Right Side) -->
+        <div class="preview-panel">
+            <div id="logoCard" class="logo-box">
+                <div id="logoIcon" class="icon-display">🚀</div>
+                <h1 id="logoTitle">My Brand</h1>
+                <p id="logoSubtitle">CREATIVE SOLUTIONS</p>
+            </div>
         </div>
-
-        <!-- Generate Button -->
-        <button class="btn-generate" onclick="generateLogo()">Generate Logo</button>
-
-        <!-- Result Display Area -->
-        <div id="resultArea" style="margin-top: 30px;"></div>
     </div>
 
-    <!-- JavaScript for Logo Generation Logic -->
-    <script>
-        function generateLogo() {
-            const name = document.getElementById('brandInput').value.trim();
-            const style = document.getElementById('logoStyleSelect').value;
-            const resultArea = document.getElementById('resultArea');
-
-            // Validation: Check if brand name is empty
-            if (!name) {
-                alert("Please enter the brand name!");
-                return;
-            }
-
-            // Render generated logo preview inside the result area
-            resultArea.innerHTML = `
-                <div class="preview-box" style="background: #2563eb; color: white; box-shadow: 0 10px 25px rgba(37,99,235,0.3);">
-                    <h2 style="margin: 0 0 5px 0; font-size: 28px; letter-spacing: 1px;">${name.toUpperCase()}</h2>
-                    <span style="font-size: 12px; opacity: 0.85; text-transform: uppercase; letter-spacing: 2px;">${style}</span>
-                </div>
-            `;
-        }
-    </script>
+    <script src="logo-script.js"></script>
 </body>
 </html>
