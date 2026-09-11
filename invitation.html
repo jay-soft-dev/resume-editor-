@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitation Card Maker - Perfect Resume</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+        }
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .brand-logo {
+            font-weight: bold;
+            font-size: 20px;
+            text-decoration: none;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo-box {
+            background: #4f46e5;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        .nav-item {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-item:hover {
+            color: #4f46e5;
+        }
+
+        /* Container & Layout */
+        .invitation-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .hero-banner {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #eee3ff 0%, #e0e7ff 100%);
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+        
+        /* Category View */
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .card-template {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            background: #ffffff;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+        .card-template:hover {
+            transform: translateY(-4px);
+        }
+        .preview-box {
+            height: 180px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .btn-create-invite {
+            background-color: #4f46e5;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        .btn-create-invite:hover {
+            background-color: #4338ca;
+        }
+
+        /* Interactive Editor Section */
+        .editor-section {
+            display: none;
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .editor-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        /* Card Live Preview Box */
+        .card-preview-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .invite-card-canvas {
+            width: 100%;
+            max-width: 380px;
+            min-height: 480px;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .invite-card-canvas h2 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .invite-card-canvas .event-subtitle {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.9;
+        }
+        .invite-card-canvas .details-box {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        .btn-download {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn-download:hover {
+            background: #059669;
+        }
+        .btn-back {
+            background: #e2e8f0;
+            color: #334155;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* PRINT STYLES - Hides UI during PDF Save/Print */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .card-preview-container, .invite-card-canvas, .invite-card-canvas * {
+                visibility: visible;
+            }
+            body {
+                background: none !important;
+            }
+            .invitation-container {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .card-preview-container {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: 100%;
+            }
+            .btn-download {
+                display: none !important;
+            }
+            @page {
+                size: auto;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="front.html" class="brand-logo">
+                <span class="logo-box">P</span> Perfect Resume
+            </a>
+            <a href="front.html" class="nav-item">← Back to Home</a>
+        </div>
+    </nav>
+
+    <div class="invitation-container">
+        
+        <!-- Category Selection View -->
+        <div id="categoryView">
+            <div class="hero-banner">
+                <h1>Create Beautiful Invitation Cards</h1>
+                <p>Design personalized invitations for weddings, birthdays, parties, and corporate events in minutes.</p>
+            </div>
+
+            <h2>Select a Category</h2>
+            <br>
+            <div class="templates-grid">
+                <div class="card-template">
+                    <div class="preview-box" style="background: linear-gradient(45deg, #f43f5e, #fb7185);">
+                        🎉 Birthday Party
+                    </div>
+                    <h3>Birthday Invitation</h3>
+                    <p>Custom templates for kids & adults</p>
+                    <button class="btn-create-invite" onclick="openEditor('Birthday Party', 'linear-gradient(135deg, #f43f5e, #fb7185)')">Customize Design</button>
+                </div>
+
+                <div class="card-template">
+                    <div class="preview-box" style="background: linear-gradient(45deg, #8b5cf6, #c084fc);">
+                        💍 Wedding Celebration
+                    </div>
+                    <h3>Wedding Card</h3>
+                    <p>Elegant & traditional designs</p>
+                    <button class="btn-create-invite" onclick="openEditor('Wedding Celebration', 'linear-gradient(135deg, #8b5cf6, #c084fc)')">Customize Design</button>
+                </div>
+
+                <div class="card-template">
+                    <div class="preview-box" style="background: linear-gradient(45deg, #0ea5e9, #38bdf8);">
+                        💼 Corporate Event
+                    </div>
+                    <h3>Business Invitation</h3>
+                    <p>Professional formal designs</p>
+                    <button class="btn-create-invite" onclick="openEditor('Corporate Event', 'linear-gradient(135deg, #0ea5e9, #38bdf8)')">Customize Design</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Editor View -->
+        <div id="editorView" class="editor-section">
+            <button class="btn-back" onclick="closeEditor()">← Back to Categories</button>
+            <h2 id="editorTitle">Customize Invitation Card</h2>
+
+            <div class="editor-grid">
+                <!-- Form Inputs -->
+                <div class="editor-form">
+                    <div class="form-group">
+                        <label>Event Title</label>
+                        <input type="text" id="inputTitle" value="You're Invited!" oninput="updateCard()">
+                    </div>
+                    <div class="form-group">
+                        <label>Host Name / Person Name</label>
+                        <input type="text" id="inputHost" value="Rahul & Family" oninput="updateCard()">
+                    </div>
+                    <div class="form-group">
+                        <label>Date & Time</label>
+                        <input type="text" id="inputDate" value="Sunday, 25th Oct | 7:00 PM Onwards" oninput="updateCard()">
+                    </div>
+                    <div class="form-group">
+                        <label>Venue / Location</label>
+                        <textarea id="inputVenue" rows="3" oninput="updateCard()">Grand Hotel & Resort, MG Road, Pune</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>RSVP / Contact Info</label>
+                        <input type="text" id="inputRsvp" value="RSVP: +91 9876543210" oninput="updateCard()">
+                    </div>
+                </div>
+
+                <!-- Live Card Preview -->
+                <div class="card-preview-container">
+                    <div class="invite-card-canvas" id="inviteCanvas">
+                        <div>
+                            <p class="event-subtitle" id="previewCategory">SPECIAL OCCASION</p>
+                            <h2 id="previewTitle" style="margin-top: 15px;">You're Invited!</h2>
+                            <p style="margin-top: 10px; font-size: 15px;">Hosted by: <strong id="previewHost">Rahul & Family</strong></p>
+                        </div>
+
+                        <div class="details-box">
+                            <p style="font-weight: 600; margin-bottom: 8px;" id="previewDate">Sunday, 25th Oct | 7:00 PM Onwards</p>
+                            <p style="font-size: 13px; opacity: 0.9;" id="previewVenue">Grand Hotel & Resort, MG Road, Pune</p>
+                        </div>
+
+                        <div>
+                            <p style="font-size: 13px; letter-spacing: 1px;" id="previewRsvp">RSVP: +91 9876543210</p>
+                        </div>
+                    </div>
+                    <button class="btn-download" onclick="window.print()">🖨️ Print / Save as PDF</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentBackground = 'linear-gradient(135deg, #6366f1, #a855f7)';
+
+        function openEditor(categoryName, bgGradient) {
+            document.getElementById('categoryView').style.display = 'none';
+            document.getElementById('editorView').style.display = 'block';
+            
+            document.getElementById('editorTitle').innerText = 'Customize ' + categoryName + ' Card';
+            document.getElementById('previewCategory').innerText = categoryName.toUpperCase();
+            
+            currentBackground = bgGradient;
+            document.getElementById('inviteCanvas').style.background = bgGradient;
+        }
+
+        function closeEditor() {
+            document.getElementById('editorView').style.display = 'none';
+            document.getElementById('categoryView').style.display = 'block';
+        }
+
+        function updateCard() {
+            document.getElementById('previewTitle').innerText = document.getElementById('inputTitle').value || 'You\'re Invited!';
+            document.getElementById('previewHost').innerText = document.getElementById('inputHost').value || 'Host Name';
+            document.getElementById('previewDate').innerText = document.getElementById('inputDate').value || 'Date & Time';
+            document.getElementById('previewVenue').innerText = document.getElementById('inputVenue').value || 'Venue Address';
+            document.getElementById('previewRsvp').innerText = document.getElementById('inputRsvp').value || 'RSVP Contact';
+        }
+    </script>
+</body>
+</html>
