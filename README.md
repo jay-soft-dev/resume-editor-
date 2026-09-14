@@ -105,7 +105,6 @@ The **Interactive ATS Resume Editor** is a modern, single-page application built
 </div>
 
 ---
-
 # ⚡ System Architecture & Data Flow
 
 ```text
@@ -120,3 +119,25 @@ ATS Layout Engine Formats Canvas
 Live Visual Preview Pane
         ↓
 PDF Export / Print Engine
+
+#🧱 Project Structure
+
+```text
+resume-editor/
+│
+├── public/
+│   └── favicon.ico
+│
+├── src/
+│   ├── assets/          # Static media and icons
+│   ├── components/      # UI components (Form, Preview, Controls)
+│   │   ├── FormEditor.jsx
+│   │   ├── ResumePreview.jsx
+│   │   └── Controls.jsx
+│   ├── styles/          # Custom styles & CSS
+│   ├── App.jsx          # Main Layout Container
+│   └── main.jsx         # Application Entry Point
+│
+├── package.json
+├── README.md
+└── .gitignore
