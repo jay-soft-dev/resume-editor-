@@ -167,5 +167,4 @@ Education: BCA Science Student at ASM's CSIT, Pune
 
 GitHub: @jay-soft-dev
 <li>
-Live Resume Editor App: resume-editor-weld-three.vercel.app
-</li>
+Live Resume Editor App: https://resume-editor-weld-three.vercel.app/
