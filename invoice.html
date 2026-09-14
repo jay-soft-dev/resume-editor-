@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator - Perfect Resume</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .brand-logo {
+            font-weight: bold;
+            font-size: 20px;
+            text-decoration: none;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo-box {
+            background: #4f46e5;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        .nav-item {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-item:hover {
+            color: #4f46e5;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        @media (max-width: 900px) {
+            .editor-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+        .item-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        .item-row input {
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .btn-add {
+            background: #e0e7ff;
+            color: #4f46e5;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+        .btn-remove {
+            background: #fee2e2;
+            color: #ef4444;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Live Invoice Styles */
+        .invoice-preview {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            color: #1e293b;
+            font-size: 13px;
+        }
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+        }
+        .invoice-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #4f46e5;
+            text-transform: uppercase;
+        }
+        .table-invoice {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .table-invoice th {
+            background: #f8fafc;
+            text-align: left;
+            padding: 8px;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 12px;
+        }
+        .table-invoice td {
+            padding: 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .totals-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 16px;
+        }
+        .totals-table {
+            width: 200px;
+        }
+        .totals-table td {
+            padding: 4px 0;
+        }
+        .btn-print {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 16px;
+            font-size: 15px;
+        }
+        .btn-print:hover {
+            background: #059669;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .invoice-preview, .invoice-preview * {
+                visibility: visible;
+            }
+            .invoice-preview {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                border: none;
+                box-shadow: none;
+            }
+            @page {
+                size: portrait;
+                margin: 10mm;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="front.html" class="brand-logo">
+                <span class="logo-box">P</span> Perfect Resume
+            </a>
+            <a href="front.html" class="nav-item">← Back to Home</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 style="margin-bottom: 20px;">Invoice & Bill Generator</h2>
+
+        <div class="editor-grid">
+            <!-- Form Inputs -->
+            <div class="card">
+                <h3 style="margin-bottom: 14px; color: #4f46e5;">Billing Details</h3>
+                
+                <div class="form-row">
+                    <div class="form-group" style="flex:1;">
+                        <label>Your Business Name</label>
+                        <input type="text" id="inCompName" value="TechVision Services" oninput="updateInvoice()">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>Invoice Number</label>
+                        <input type="text" id="inNum" value="INV-2026-001" oninput="updateInvoice()">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group" style="flex:1;">
+                        <label>Invoice Date</label>
+                        <input type="date" id="inDate" onchange="updateInvoice()">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>Client Name</label>
+                        <input type="text" id="inClientName" value="Rahul Sharma" oninput="updateInvoice()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Client Address / Details</label>
+                    <input type="text" id="inClientAddr" value="Pune, Maharashtra" oninput="updateInvoice()">
+                </div>
+
+                <h3 style="margin: 16px 0 10px 0; color: #4f46e5;">Item List</h3>
+                <div id="itemsContainer">
+                    <div class="item-row">
+                        <input type="text" placeholder="Item Description" class="item-desc" value="Web Design Service" style="flex: 2;" oninput="updateInvoice()">
+                        <input type="number" placeholder="Qty" class="item-qty" value="1" style="width: 60px;" oninput="updateInvoice()">
+                        <input type="number" placeholder="Rate (₹)" class="item-rate" value="5000" style="width: 90px;" oninput="updateInvoice()">
+                        <button class="btn-remove" onclick="removeItem(this)">×</button>
+                    </div>
+                </div>
+                <button class="btn-add" onclick="addItem()">+ Add Item</button>
+
+                <div class="form-row" style="margin-top: 16px;">
+                    <div class="form-group" style="flex:1;">
+                        <label>GST / Tax (%)</label>
+                        <input type="number" id="inTax" value="18" oninput="updateInvoice()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Invoice Preview -->
+            <div>
+                <div class="invoice-preview" id="invoiceCanvas">
+                    <div class="invoice-header">
+                        <div>
+                            <div class="invoice-title">INVOICE</div>
+                            <strong id="pvCompName" style="font-size: 15px; color: #0f172a;">TechVision Services</strong>
+                        </div>
+                        <div style="text-align: right;">
+                            <p><strong>Invoice No:</strong> <span id="pvNum">INV-2026-001</span></p>
+                            <p><strong>Date:</strong> <span id="pvDate">14/09/2026</span></p>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <p style="color: #64748b; font-size: 11px;">BILLED TO:</p>
+                        <strong id="pvClientName" style="font-size: 14px;">Rahul Sharma</strong>
+                        <p id="pvClientAddr" style="color: #475569;">Pune, Maharashtra</p>
+                    </div>
+
+                    <table class="table-invoice">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th style="text-align: center;">Qty</th>
+                                <th style="text-align: right;">Rate (₹)</th>
+                                <th style="text-align: right;">Amount (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pvItemsList">
+                            <!-- Items added dynamically -->
+                        </tbody>
+                    </table>
+
+                    <div class="totals-section">
+                        <table class="totals-table">
+                            <tr>
+                                <td>Subtotal:</td>
+                                <td style="text-align: right;" id="pvSubtotal">₹5,000.00</td>
+                            </tr>
+                            <tr>
+                                <td>Tax (<span id="pvTaxRate">18</span>%):</td>
+                                <td style="text-align: right;" id="pvTaxAmt">₹900.00</td>
+                            </tr>
+                            <tr style="font-weight: bold; font-size: 15px; border-top: 2px solid #e2e8f0;">
+                                <td style="padding-top: 8px;">Total:</td>
+                                <td style="text-align: right; padding-top: 8px; color: #4f46e5;" id="pvTotal">₹5,900.00</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div style="margin-top: 30px; border-top: 1px solid #f1f5f9; padding-top: 12px; text-align: center; color: #94a3b8; font-size: 11px;">
+                        Thank you for your business!
+                    </div>
+                </div>
+
+                <button class="btn-print" onclick="window.print()">🖨️ Print / Download PDF Invoice</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set default today date
+        document.getElementById('inDate').valueAsDate = new Date();
+
+        function addItem() {
+            const container = document.getElementById('itemsContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'item-row';
+            newRow.innerHTML = `
+                <input type="text" placeholder="Item Description" class="item-desc" value="New Service" style="flex: 2;" oninput="updateInvoice()">
+                <input type="number" placeholder="Qty" class="item-qty" value="1" style="width: 60px;" oninput="updateInvoice()">
+                <input type="number" placeholder="Rate (₹)" class="item-rate" value="1000" style="width: 90px;" oninput="updateInvoice()">
+                <button class="btn-remove" onclick="removeItem(this)">×</button>
+            `;
+            container.appendChild(newRow);
+            updateInvoice();
+        }
+
+        function removeItem(btn) {
+            btn.parentElement.remove();
+            updateInvoice();
+        }
+
+        function updateInvoice() {
+            document.getElementById('pvCompName').innerText = document.getElementById('inCompName').value || 'Business Name';
+            document.getElementById('pvNum').innerText = document.getElementById('inNum').value || 'INV-000';
+            
+            const rawDate = document.getElementById('inDate').value;
+            if(rawDate) {
+                const dateParts = rawDate.split('-');
+                document.getElementById('pvDate').innerText = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+            }
+
+            document.getElementById('pvClientName').innerText = document.getElementById('inClientName').value || 'Client Name';
+            document.getElementById('pvClientAddr').innerText = document.getElementById('inClientAddr').value || '';
+
+            // Calculate items
+            const descs = document.querySelectorAll('.item-desc');
+            const qtys = document.querySelectorAll('.item-qty');
+            const rates = document.querySelectorAll('.item-rate');
+
+            const listBody = document.getElementById('pvItemsList');
+            listBody.innerHTML = '';
+
+            let subtotal = 0;
+
+            for(let i = 0; i < descs.length; i++) {
+                const descVal = descs[i].value || 'Item';
+                const qtyVal = parseFloat(qtys[i].value) || 0;
+                const rateVal = parseFloat(rates[i].value) || 0;
+                const lineTotal = qtyVal * rateVal;
+
+                subtotal += lineTotal;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${descVal}</td>
+                    <td style="text-align: center;">${qtyVal}</td>
+                    <td style="text-align: right;">₹${rateVal.toLocaleString('en-IN')}</td>
+                    <td style="text-align: right;">₹${lineTotal.toLocaleString('en-IN')}</td>
+                `;
+                listBody.appendChild(tr);
+            }
+
+            const taxRate = parseFloat(document.getElementById('inTax').value) || 0;
+            const taxAmount = (subtotal * taxRate) / 100;
+            const grandTotal = subtotal + taxAmount;
+
+            document.getElementById('pvSubtotal').innerText = '₹' + subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2});
+            document.getElementById('pvTaxRate').innerText = taxRate;
+            document.getElementById('pvTaxAmt').innerText = '₹' + taxAmount.toLocaleString('en-IN', {minimumFractionDigits: 2});
+            document.getElementById('pvTotal').innerText = '₹' + grandTotal.toLocaleString('en-IN', {minimumFractionDigits: 2});
+        }
+
+        // Initial trigger
+        updateInvoice();
+    </script>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brochure Maker - Perfect Resume</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .brand-logo {
+            font-weight: bold;
+            font-size: 20px;
+            text-decoration: none;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo-box {
+            background: #4f46e5;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        .nav-item {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-item:hover {
+            color: #4f46e5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .hero-banner {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .card-template {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            background: #ffffff;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+        .card-template:hover {
+            transform: translateY(-4px);
+        }
+        .preview-box {
+            height: 180px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .btn-create {
+            background-color: #4f46e5;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        .btn-create:hover {
+            background-color: #4338ca;
+        }
+        .editor-section {
+            display: none;
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        @media (max-width: 900px) {
+            .editor-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        /* Brochure Tri-Fold Preview Layout */
+        .brochure-preview-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .brochure-canvas {
+            width: 100%;
+            min-height: 450px;
+            border-radius: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 15px;
+            background: #1e293b;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .panel {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: #0f172a;
+            font-size: 12px;
+        }
+        .panel h3 {
+            font-size: 16px;
+            color: #4f46e5;
+            margin-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 4px;
+        }
+        .btn-download {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn-download:hover {
+            background: #059669;
+        }
+        .btn-back {
+            background: #e2e8f0;
+            color: #334155;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .brochure-preview-container, .brochure-canvas, .brochure-canvas * {
+                visibility: visible;
+            }
+            body {
+                background: none !important;
+            }
+            .container {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .brochure-preview-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .btn-download {
+                display: none !important;
+            }
+            @page {
+                size: landscape;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="front.html" class="brand-logo">
+                <span class="logo-box">P</span> Perfect Resume
+            </a>
+            <a href="front.html" class="nav-item">← Back to Home</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Selection View -->
+        <div id="categoryView">
+            <div class="hero-banner">
+                <h1>Professional Brochure Builder</h1>
+                <p>Design multi-panel corporate, event, and product promotional brochures easily.</p>
+            </div>
+
+            <h2>Select Brochure Design</h2>
+            <br>
+            <div class="templates-grid">
+                <div class="card-template">
+                    <div class="preview-box" style="background: linear-gradient(45deg, #0284c7, #2563eb);">
+                        💼 Business Corporate
+                    </div>
+                    <h3>Business Brochure</h3>
+                    <p>Ideal for corporate services, agencies, and companies</p>
+                    <button class="btn-create" onclick="openEditor('Business Corporate')">Customize Design</button>
+                </div>
+
+                <div class="card-template">
+                    <div class="preview-box" style="background: linear-gradient(45deg, #7c3aed, #c026d3);">
+                        🎓 College & Academy
+                    </div>
+                    <h3>Education Brochure</h3>
+                    <p>Great for courses, admission details & college fests</p>
+                    <button class="btn-create" onclick="openEditor('Educational Program')">Customize Design</button>
+                </div>
+
+                <div class="card-template">
+                    <div class="preview-box" style="background: linear-gradient(45deg, #059669, #10b981);">
+                        🛍️ Product Catalog
+                    </div>
+                    <h3>Product Showcase</h3>
+                    <p>Highlight your key products and special features</p>
+                    <button class="btn-create" onclick="openEditor('Product Showcase')">Customize Design</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Editor View -->
+        <div id="editorView" class="editor-section">
+            <button class="btn-back" onclick="closeEditor()">← Back to Templates</button>
+            <h2 id="editorTitle">Customize Brochure</h2>
+
+            <div class="editor-grid">
+                <!-- Inputs -->
+                <div class="editor-form">
+                    <h3>Panel 1: Front Cover</h3>
+                    <div class="form-group">
+                        <label>Company / College Name</label>
+                        <input type="text" id="inCompName" value="TechVision Solutions" oninput="updateBrochure()">
+                    </div>
+                    <div class="form-group">
+                        <label>Main Tagline</label>
+                        <input type="text" id="inTagline" value="Empowering Digital Innovation" oninput="updateBrochure()">
+                    </div>
+
+                    <h3 style="margin-top: 15px;">Panel 2: About Us & Services</h3>
+                    <div class="form-group">
+                        <label>About Us Summary</label>
+                        <textarea id="inAbout" rows="3" oninput="updateBrochure()">We provide cutting-edge software development, cloud services, and UI/UX design to accelerate your growth.</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Key Offerings / Services</label>
+                        <textarea id="inServices" rows="3" oninput="updateBrochure()">• Web & Mobile Apps&#10;• Cloud Architecture&#10;• Cybersecurity Solutions</textarea>
+                    </div>
+
+                    <h3 style="margin-top: 15px;">Panel 3: Contact Info</h3>
+                    <div class="form-group">
+                        <label>Contact Email & Phone</label>
+                        <input type="text" id="inContact" value="contact@techvision.com | +91 9876543210" oninput="updateBrochure()">
+                    </div>
+                    <div class="form-group">
+                        <label>Address / Website</label>
+                        <input type="text" id="inAddress" value="Pune, Maharashtra | www.techvision.com" oninput="updateBrochure()">
+                    </div>
+                </div>
+
+                <!-- Tri-fold Live Preview -->
+                <div class="brochure-preview-container">
+                    <div class="brochure-canvas" id="brochureCanvas">
+                        <!-- Left Panel: About -->
+                        <div class="panel">
+                            <div>
+                                <h3>About Us</h3>
+                                <p id="pvAbout">We provide cutting-edge software development, cloud services, and UI/UX design to accelerate your growth.</p>
+                            </div>
+                            <div style="background: #f1f5f9; padding: 8px; border-radius: 6px;">
+                                <strong style="font-size: 11px; color: #475569;">Why Choose Us?</strong>
+                                <p style="font-size: 10px; color: #64748b; margin-top: 4px;">Top rated quality and dedicated support.</p>
+                            </div>
+                        </div>
+
+                        <!-- Center Panel: Services -->
+                        <div class="panel">
+                            <div>
+                                <h3>Services</h3>
+                                <p id="pvServices" style="white-space: pre-line;">• Web & Mobile Apps&#10;• Cloud Architecture&#10;• Cybersecurity Solutions</p>
+                            </div>
+                            <div style="background: #e0e7ff; padding: 8px; border-radius: 6px; text-align: center;">
+                                <strong style="color: #3730a3; font-size: 11px;">100% Satisfaction</strong>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel: Cover & Contact -->
+                        <div class="panel" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white;">
+                            <div>
+                                <span style="background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 10px; font-size: 10px;">OFFICIAL BROCHURE</span>
+                                <h2 id="pvCompName" style="font-size: 20px; margin-top: 15px; font-weight: 800;">TechVision Solutions</h2>
+                                <p id="pvTagline" style="font-size: 12px; margin-top: 8px; opacity: 0.9;">Empowering Digital Innovation</p>
+                            </div>
+
+                            <div style="border-top: 1px solid rgba(255,255,255,0.3); padding-top: 10px; font-size: 10px; opacity: 0.95;">
+                                <p id="pvContact">contact@techvision.com | +91 9876543210</p>
+                                <p id="pvAddress" style="margin-top: 4px;">Pune, Maharashtra | www.techvision.com</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-download" onclick="window.print()">🖨️ Print / Download PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openEditor(title) {
+            document.getElementById('categoryView').style.display = 'none';
+            document.getElementById('editorView').style.display = 'block';
+            document.getElementById('editorTitle').innerText = 'Customize ' + title + ' Brochure';
+        }
+
+        function closeEditor() {
+            document.getElementById('editorView').style.display = 'none';
+            document.getElementById('categoryView').style.display = 'block';
+        }
+
+        function updateBrochure() {
+            document.getElementById('pvCompName').innerText = document.getElementById('inCompName').value || 'Company Name';
+            document.getElementById('pvTagline').innerText = document.getElementById('inTagline').value || 'Tagline here';
+            document.getElementById('pvAbout').innerText = document.getElementById('inAbout').value || 'About details...';
+            document.getElementById('pvServices').innerText = document.getElementById('inServices').value || 'Services list...';
+            document.getElementById('pvContact').innerText = document.getElementById('inContact').value || 'Contact info';
+            document.getElementById('pvAddress').innerText = document.getElementById('inAddress').value || 'Address details';
+        }
+    </script>
+</body>
+</html>
