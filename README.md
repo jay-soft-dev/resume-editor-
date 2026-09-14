@@ -141,3 +141,27 @@ resume-editor/
 ├── package.json
 ├── README.md
 └── .gitignore
+
+---
+
+# 🛠️ Local Setup
+
+### 1. Clone the Repository
+```bash
+git clone [https://github.com/jay-soft-dev/resume-editor.git](https://github.com/jay-soft-dev/resume-editor.git)
+
+cd resume-editor
+
+🌐 Live Deployment
+The project is deployed and accessible live at:
+
+🔗 https://resume-editor-weld-three.vercel.app/
+
+👤 Author
+Jay Chandrakant Pawar
+
+Education: BCA Science Student at ASM's CSIT, Pune
+
+GitHub: @jay-soft-dev
+
+Live Resume Editor App: resume-editor-weld-three.vercel.app
