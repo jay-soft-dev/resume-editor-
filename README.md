@@ -120,7 +120,6 @@ Live Visual Preview Pane
         ↓
 PDF Export / Print Engine
 
-```
 #🧱 Project Structure
 
 resume-editor/
@@ -141,7 +140,7 @@ resume-editor/
 ├── package.json
 ├── README.md
 └── .gitignore
-```
+
 ---
 ```
 
