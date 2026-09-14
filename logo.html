@@ -1,83 +1,167 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="mr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logo Maker - Perfect Resume</title>
-    <link rel="stylesheet" href="logo-style.css">
-    <!-- Google Fonts for Logos -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Playfair+Display:wght@700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
-    <!-- Canvas Library for PNG Download -->
+    <title>AI Universal Logo Generator</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Orbitron:wght@800&family=Outfit:wght@700;900&family=Playfair+Display:wght@700&family=Poppins:wght@700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons Library -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #0b0d10; color: #ffffff; min-height: 100vh; padding: 40px 20px; font-family: 'Outfit', sans-serif; display: flex; flex-direction: column; align-items: center; }
+
+        h1 { color: #38bdf8; font-size: 2.2rem; margin-bottom: 25px; font-weight: 800; text-align: center; }
+
+        .search-container { width: 100%; max-width: 600px; position: relative; margin-bottom: 15px; }
+        .search-box { width: 100%; padding: 16px 160px 16px 25px; border-radius: 40px; border: 1px solid #1e293b; background: #161b22; color: #fff; font-size: 1rem; outline: none; }
+        .search-box:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
+
+        .search-btn { position: absolute; right: 6px; top: 6px; bottom: 6px; padding: 0 24px; border-radius: 30px; border: none; background: #38bdf8; color: #0f172a; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .search-btn:hover { background: #7dd3fc; }
+
+        .stats { color: #94a3b8; font-size: 0.95rem; margin-bottom: 30px; text-align: center; }
+
+        .logo-grid { width: 100%; max-width: 1200px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+
+        .logo-card { border-radius: 20px; padding: 30px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 270px; position: relative; overflow: hidden; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.08); transition: transform 0.2s; }
+        .logo-card:hover { transform: translateY(-4px); }
+
+        .icon-box { width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
+        .icon-box svg { width: 64px; height: 64px; }
+
+        .logo-text { font-size: 1.5rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; word-break: break-all; text-align: center; line-height: 1.2; }
+        .logo-subtext { font-size: 0.7rem; opacity: 0.65; letter-spacing: 3px; margin-top: 6px; text-transform: uppercase; }
+
+        .download-btn { position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.2s; backdrop-filter: blur(2px); }
+        .logo-card:hover .download-btn { opacity: 1; }
+        .download-btn button { background: #ffffff; color: #000000; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 800; cursor: pointer; font-size: 0.9rem; }
+    </style>
 </head>
 <body>
 
-    <header class="logo-header">
-        <!-- Back link updated to front.html -->
-        <a href="front.html" class="back-link">← Back to Main Page</a>
-        <h2>🎨 Professional Logo Creator</h2>
-    </header>
+    <h1>AI Universal Logo Generator</h1>
 
-    <div class="logo-container">
-        <!-- Control Panel (Left Side) -->
-        <div class="controls-panel">
-            <h3>Logo Details</h3>
-            
-            <div class="input-group">
-                <label>Brand Name:</label>
-                <input type="text" id="brandName" value="My Brand" oninput="generateLogo()">
-            </div>
-
-            <div class="input-group">
-                <label>Tagline / Slogan:</label>
-                <input type="text" id="tagline" value="CREATIVE SOLUTIONS" oninput="generateLogo()">
-            </div>
-
-            <div class="input-group">
-                <label>Select Icon:</label>
-                <select id="iconSelect" onchange="generateLogo()">
-                    <option value="🚀">🚀 Rocket / Tech</option>
-                    <option value="⚡">⚡ Bolt / Fast</option>
-                    <option value="💼">💼 Business / Work</option>
-                    <option value="👑">👑 Crown / Premium</option>
-                    <option value="🎯">🎯 Target / Focus</option>
-                    <option value="💎">💎 Diamond / Luxury</option>
-                    <option value="🔥">🔥 Fire / Passion</option>
-                </select>
-            </div>
-
-            <div class="input-group">
-                <label>Font Style:</label>
-                <select id="fontSelect" onchange="generateLogo()">
-                    <option value="'Poppins', sans-serif">Poppins (Modern & Clean)</option>
-                    <option value="'Playfair Display', serif">Playfair (Classic & Bold)</option>
-                    <option value="'Montserrat', sans-serif">Montserrat (Stylish)</option>
-                </select>
-            </div>
-
-            <div class="input-group">
-                <label>Primary Color:</label>
-                <input type="color" id="primaryColor" value="#4F46E5" oninput="generateLogo()">
-            </div>
-
-            <div class="input-group">
-                <label>Background Color:</label>
-                <input type="color" id="bgColor" value="#ffffff" oninput="generateLogo()">
-            </div>
-
-            <button class="btn-download" onclick="downloadPNG()">Download Logo (PNG) 📥</button>
-        </div>
-
-        <!-- Live Preview Area (Right Side) -->
-        <div class="preview-panel">
-            <div id="logoCard" class="logo-box">
-                <div id="logoIcon" class="icon-display">🚀</div>
-                <h1 id="logoTitle">My Brand</h1>
-                <p id="logoSubtitle">CREATIVE SOLUTIONS</p>
-            </div>
-        </div>
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-box" value="bike" placeholder="काहीही टाका (उदा. bike, mango, doctor, crypto)...">
+        <button class="search-btn" onclick="generateLogos()">Generate Logos <i data-lucide="arrow-right"></i></button>
     </div>
 
-    <script src="logo-script.js"></script>
+    <div class="stats" id="statsText">Rendering vector logos...</div>
+
+    <div class="logo-grid" id="logoGrid"></div>
+
+    <script>
+        const fontList = [
+            "'Outfit', sans-serif", "'Montserrat', sans-serif", "'Orbitron', sans-serif", 
+            "'Space Grotesk', sans-serif", "'Playfair Display', serif", "'Poppins', sans-serif"
+        ];
+
+        const colorThemes = [
+            { bg: '#0d1117', text: '#38bdf8', icon: '#38bdf8' },
+            { bg: '#ffffff', text: '#0f172a', icon: '#0f172a' },
+            { bg: '#1e1b4b', text: '#818cf8', icon: '#818cf8' },
+            { bg: '#022c22', text: '#34d399', icon: '#34d399' },
+            { bg: '#0f172a', text: '#f43f5e', icon: '#f43f5e' },
+            { bg: '#fafafa', text: '#18181b', icon: '#18181b' },
+            { bg: '#2e1065', text: '#c084fc', icon: '#c084fc' },
+            { bg: '#172554', text: '#60a5fa', icon: '#60a5fa' },
+            { bg: '#451a03', text: '#fb923c', icon: '#fb923c' },
+            { bg: '#111827', text: '#facc15', icon: '#facc15' }
+        ];
+
+        // 1. Dynamic Search-to-Icon Engine Map
+        const keywordIconMap = {
+            bike: ['bike', 'gauge', 'zap', 'shield', 'award', 'flame'],
+            apple: ['apple', 'leaf', 'tree-pine', 'smartphone', 'laptop'],
+            mango: ['apple', 'leaf', 'sun', 'sparkles', 'citrus'],
+            fruit: ['apple', 'citrus', 'leaf', 'sun'],
+            car: ['car', 'gauge', 'wrench', 'fuel'],
+            tech: ['cpu', 'code', 'bot', 'network', 'database', 'atom'],
+            crypto: ['bitcoin', 'coins', 'wallet', 'activity', 'shield'],
+            doctor: ['stethoscope', 'activity', 'heart-pulse', 'cross'],
+            coffee: ['coffee', 'cup-soda', 'flame', 'store'],
+            gym: ['dumbbell', 'activity', 'flame', 'trophy', 'zap'],
+            food: ['utensils', 'pizza', 'flame', 'soup'],
+            default: ['crown', 'zap', 'rocket', 'shield', 'box', 'gem', 'infinity', 'compass', 'flame', 'star', 'shapes', 'layers', 'atom', 'sparkles']
+        };
+
+        function getIconsForQuery(query) {
+            const term = query.toLowerCase().trim();
+            for (let key in keywordIconMap) {
+                if (term.includes(key)) {
+                    return keywordIconMap[key];
+                }
+            }
+            return keywordIconMap.default;
+        }
+
+        function generateLogos() {
+            const query = document.getElementById('searchInput').value.trim() || 'bike';
+            const grid = document.getElementById('logoGrid');
+            const stats = document.getElementById('statsText');
+
+            grid.innerHTML = '';
+            const matchingIcons = getIconsForQuery(query);
+
+            let logoIndex = 1;
+
+            // 500+ Unique Combination Loop
+            for (let i = 0; i < 50; i++) {
+                matchingIcons.forEach((iconName, idx) => {
+                    const theme = colorThemes[(i + idx) % colorThemes.length];
+                    const font = fontList[(i + idx) % fontList.length];
+
+                    const card = document.createElement('div');
+                    card.className = 'logo-card';
+                    card.id = `logo-${logoIndex}`;
+                    card.style.backgroundColor = theme.bg;
+
+                    card.innerHTML = `
+                        <div class="icon-box" style="color: ${theme.icon}">
+                            <i data-lucide="${iconName}"></i>
+                        </div>
+                        <div class="logo-text" style="color: ${theme.text}; font-family: ${font}">${query}</div>
+                        <div class="logo-subtext" style="color: ${theme.text}">EST. 2026</div>
+
+                        <div class="download-btn">
+                            <button onclick="downloadLogo('logo-${logoIndex}', '${query}')">Download PNG 📥</button>
+                        </div>
+                    `;
+
+                    grid.appendChild(card);
+                    logoIndex++;
+                });
+            }
+
+            // Execute SVG Icon Rendering natively (No external CORS/404 issues)
+            lucide.createIcons();
+            stats.innerText = `Displaying ${logoIndex - 1}+ Unique Smart Vector Logos for "${query}"`;
+        }
+
+        function downloadLogo(cardId, brand) {
+            const card = document.getElementById(cardId);
+            const overlay = card.querySelector('.download-btn');
+            overlay.style.display = 'none';
+
+            html2canvas(card, { scale: 3, useCORS: true }).then(canvas => {
+                const a = document.createElement('a');
+                a.href = canvas.toDataURL('image/png');
+                a.download = `${brand}-logo-${cardId}.png`;
+                a.click();
+                overlay.style.display = 'flex';
+            });
+        }
+
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') generateLogos();
+        });
+
+        window.onload = generateLogos;
+    </script>
 </body>
 </html>
