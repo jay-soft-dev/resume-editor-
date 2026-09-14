@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poster Maker - Perfect Resume</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+        }
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .brand-logo {
+            font-weight: bold;
+            font-size: 20px;
+            text-decoration: none;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo-box {
+            background: #4f46e5;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        .nav-item {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-item:hover {
+            color: #4f46e5;
+        }
+
+        /* Container & Layout */
+        .poster-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .hero-banner {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #e0f2fe 0%, #e0e7ff 100%);
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+        
+        /* Category View */
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .card-template {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            background: #ffffff;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+        .card-template:hover {
+            transform: translateY(-4px);
+        }
+        .preview-box {
+            height: 180px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .btn-create-poster {
+            background-color: #4f46e5;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        .btn-create-poster:hover {
+            background-color: #4338ca;
+        }
+
+        /* Interactive Editor Section */
+        .editor-section {
+            display: none;
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .editor-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        /* Poster Live Preview Box */
+        .poster-preview-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .poster-canvas {
+            width: 100%;
+            max-width: 380px;
+            min-height: 520px;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .poster-canvas h2 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .poster-canvas .poster-badge {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: rgba(255, 255, 255, 0.25);
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        .poster-canvas .details-box {
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(8px);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .btn-download {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn-download:hover {
+            background: #059669;
+        }
+        .btn-back {
+            background: #e2e8f0;
+            color: #334155;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* PRINT STYLES - Print Only Poster Canvas */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .poster-preview-container, .poster-canvas, .poster-canvas * {
+                visibility: visible;
+            }
+            body {
+                background: none !important;
+            }
+            .poster-container {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .poster-preview-container {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: 100%;
+            }
+            .btn-download {
+                display: none !important;
+            }
+            @page {
+                size: auto;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="front.html" class="brand-logo">
+                <span class="logo-box">P</span> Perfect Resume
+            </a>
+            <a href="front.html" class="nav-item">← Back to Home</a>
+        </div>
+    </nav>
+
+    <div class="poster-container">
+        
+        <!-- Category Selection View -->
+        <div id="categoryView">
+            <div class="hero-banner">
+                <h1>Create Custom Posters & Banners</h1>
+                <p>Design stunning posters for college events, workshops, announcements, and offers.</p>
+            </div>
+
+            <h2>Select Poster Template</h2>
+            <br>
+            <div class="templates-grid">
+                <div class="card-template">
+                    <div class="preview-box" style="background: linear-gradient(45deg, #0284c7, #2563eb);">
+                        📢 Event Announcement
+                    </div>
+                    <h3>Event Poster</h3>
+                    <p>Perfect for tech fests, seminars & workshops</p>
+                    <button class="btn-create-poster" onclick="openEditor('Event Announcement', 'linear-gradient(135deg, #0284c7, #2563eb)')">Customize Design</button>
+                </div>
+
+                <div class="card-template">
+                    <div class="preview-box" style="background: linear-gradient(45deg, #d97706, #dc2626);">
+                        🔥 Special Promotion
+                    </div>
+                    <h3>Business Offer</h3>
+                    <p>Attract customers with sales & discount posters</p>
+                    <button class="btn-create-poster" onclick="openEditor('Special Promotion', 'linear-gradient(135deg, #d97706, #dc2626)')">Customize Design</button>
+                </div>
+
+                <div class="card-template">
+                    <div class="preview-box" style="background: linear-gradient(45deg, #059669, #10b981);">
+                        🎓 Academic & Club
+                    </div>
+                    <h3>College / Club Poster</h3>
+                    <p>Ideal for student council, sports & achievements</p>
+                    <button class="btn-create-poster" onclick="openEditor('Academic Event', 'linear-gradient(135deg, #059669, #10b981)')">Customize Design</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Editor View -->
+        <div id="editorView" class="editor-section">
+            <button class="btn-back" onclick="closeEditor()">← Back to Templates</button>
+            <h2 id="editorTitle">Customize Poster</h2>
+
+            <div class="editor-grid">
+                <!-- Form Inputs -->
+                <div class="editor-form">
+                    <div class="form-group">
+                        <label>Poster Tagline / Category</label>
+                        <input type="text" id="inputTagline" value="ANNUAL TECH FEST 2026" oninput="updatePoster()">
+                    </div>
+                    <div class="form-group">
+                        <label>Main Headline Title</label>
+                        <input type="text" id="inputTitle" value="INNOVA TECH" oninput="updatePoster()">
+                    </div>
+                    <div class="form-group">
+                        <label>Subtitle / Description</label>
+                        <textarea id="inputSubtitle" rows="2" oninput="updatePoster()">Join us for coding competitions, hackathons, and expert tech talks!</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Date & Venue</label>
+                        <input type="text" id="inputDateVenue" value="October 15, 2026 | College Auditorium" oninput="updatePoster()">
+                    </div>
+                    <div class="form-group">
+                        <label>Contact / Registration Link</label>
+                        <input type="text" id="inputContact" value="Register at: www.innovatech2026.com" oninput="updatePoster()">
+                    </div>
+                </div>
+
+                <!-- Live Card Preview -->
+                <div class="poster-preview-container">
+                    <div class="poster-canvas" id="posterCanvas">
+                        <div>
+                            <span class="poster-badge" id="previewTagline">ANNUAL TECH FEST 2026</span>
+                            <h2 id="previewTitle" style="margin-top: 10px;">INNOVA TECH</h2>
+                            <p id="previewSubtitle" style="margin-top: 12px; font-size: 15px; opacity: 0.95;">Join us for coding competitions, hackathons, and expert tech talks!</p>
+                        </div>
+
+                        <div class="details-box">
+                            <p style="font-weight: 700; margin-bottom: 6px;" id="previewDateVenue">October 15, 2026 | College Auditorium</p>
+                        </div>
+
+                        <div>
+                            <p style="font-size: 13px; font-weight: 600;" id="previewContact">Register at: www.innovatech2026.com</p>
+                        </div>
+                    </div>
+                    <button class="btn-download" onclick="window.print()">🖨️ Print / Save as PDF</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function openEditor(categoryName, bgGradient) {
+            document.getElementById('categoryView').style.display = 'none';
+            document.getElementById('editorView').style.display = 'block';
+            
+            document.getElementById('editorTitle').innerText = 'Customize ' + categoryName + ' Poster';
+            document.getElementById('previewTagline').innerText = categoryName.toUpperCase();
+            document.getElementById('inputTagline').value = categoryName.toUpperCase();
+            
+            document.getElementById('posterCanvas').style.background = bgGradient;
+        }
+
+        function closeEditor() {
+            document.getElementById('editorView').style.display = 'none';
+            document.getElementById('categoryView').style.display = 'block';
+        }
+
+        function updatePoster() {
+            document.getElementById('previewTagline').innerText = document.getElementById('inputTagline').value || 'CATEGORY';
+            document.getElementById('previewTitle').innerText = document.getElementById('inputTitle').value || 'POSTER TITLE';
+            document.getElementById('previewSubtitle').innerText = document.getElementById('inputSubtitle').value || 'Description text...';
+            document.getElementById('previewDateVenue').innerText = document.getElementById('inputDateVenue').value || 'Date & Venue';
+            document.getElementById('previewContact').innerText = document.getElementById('inputContact').value || 'Contact Info';
+        }
+    </script>
+</body>
+</html>
